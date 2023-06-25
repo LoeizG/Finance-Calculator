@@ -16,21 +16,25 @@ const ExcelCard = (props) => {
 
       workbook.SheetNames.forEach((sheetName) => {
         const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, {
+          header: 1,
+          dateNF: "dd/mm/yyyy",
+        });
 
         const table = {
           sheetName,
           data: jsonData,
         };
+        props.columnsData(table);
 
         tableData.push(table);
       });
-      props.columnsData(tableData);
 
       setTables(tableData);
     };
 
     reader.readAsArrayBuffer(file);
+    console.log("Archivo importado:", file); // Imprimir el archivo importado
   };
 
   return (
@@ -67,4 +71,4 @@ const ExcelCard = (props) => {
   );
 };
 
-export default ExcelCard; 
+export default ExcelCard;

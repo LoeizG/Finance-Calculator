@@ -16,9 +16,7 @@ import ComplexTable from "./components/ComplexTable";
 import ExcelCard from "./components/ExelCard";
 const Tables = () => {
   const [tables, setTables] = useState([]);
-
   const Vista = (vista_A) => {
-
     console.log(vista_A);
     console.log(columnsDataDevelopment);
 
@@ -30,14 +28,14 @@ const Tables = () => {
 
   return (
     <div>
-      <div className="grid grid-cols-1 gap-5 mt-5 h-full md:grid-cols-2">
+      <div className="mt-5 grid h-full grid-cols-1 gap-5 md:grid-cols-2">
         <ExcelCard
           columnsData={Vista}
 
-        // tableData={tableDataColumns}
+          // tableData={tableDataColumns}
         />
       </div>
-      <div className="grid grid-cols-1 gap-5 mt-5 h-full md:grid-cols-2">
+      <div className="mt-5 grid h-full grid-cols-1 gap-5 md:grid-cols-2">
         <DevelopmentTable
           columnsData={columnsDataDevelopment}
           tableData={tableDataDevelopment}
@@ -45,7 +43,7 @@ const Tables = () => {
         <CheckTable columnsData={columnsDataCheck} tableData={tableDataCheck} />
       </div>
 
-      <div className="grid grid-cols-1 gap-5 mt-5 h-full md:grid-cols-2">
+      <div className="mt-5 grid h-full grid-cols-1 gap-5 md:grid-cols-2">
         <ColumnsTable
           columnsData={columnsDataColumns}
           tableData={tableDataColumns}
@@ -56,7 +54,7 @@ const Tables = () => {
           tableData={tableDataComplex}
         />
       </div>
-      <div className="grid grid-cols-1 gap-5 mt-5 h-full md:grid-cols-2">
+      <div className="mt-5 grid h-full grid-cols-1 gap-5 md:grid-cols-2">
         <ColumnsTable
           columnsData={columnsDataColumns}
           tableData={tableDataColumns}
