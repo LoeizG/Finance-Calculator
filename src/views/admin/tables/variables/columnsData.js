@@ -73,3 +73,43 @@ export const columnsDataComplex = [
     accessor: "progress",
   },
 ];
+
+export const columnsDataVentasAnuales = [
+  {
+    Header: "NAME",
+    accessor: "name",
+  },
+  {
+    Header: "STATUS",
+    accessor: "status",
+  },
+  {
+    Header: "DATE",
+    accessor: "date",
+  },
+  {
+    Header: "PROGRESS",
+    accessor: "progress",
+  },
+  {
+    Header: "NAME1",
+    accessor: "name1",
+  },
+  {
+    Header: "STATUS2",
+    accessor: "status2",
+  },
+  {
+    Header: "DATE3",
+    accessor: "date3",
+  },
+  {
+    Header: "PROGRESS4",
+    accessor: "progress4",
+  },
+
+  {
+    Header: "PROGRES5",
+    accessor: "progress5",
+  },
+];

@@ -5,6 +5,7 @@ import {
   columnsDataCheck,
   columnsDataColumns,
   columnsDataComplex,
+  columnsDataVentasAnuales,
 } from "./variables/columnsData";
 import tableDataDevelopment from "./variables/tableDataDevelopment.json";
 import tableDataCheck from "./variables/tableDataCheck.json";
@@ -54,9 +55,9 @@ const Tables = () => {
           tableData={tableDataComplex}
         />
       </div>
-      <div className="mt-5 grid h-full grid-cols-1 gap-5 md:grid-cols-2">
+      <div className="mt-5 grid h-full grid-cols-1 gap-5 bg-red-200 md:grid-cols-2">
         <ColumnsTable
-          columnsData={columnsDataColumns}
+          columnsData={columnsDataVentasAnuales}
           tableData={tableDataColumns}
         />
 
