@@ -5,7 +5,7 @@ import {
   columnsDataCheck,
   columnsDataColumns,
   columnsDataComplex,
-  columnsDataVentasAnuales,
+  columnsDataVentasAnuales
 } from "./variables/columnsData";
 import tableDataDevelopment from "./variables/tableDataDevelopment.json";
 import tableDataCheck from "./variables/tableDataCheck.json";
@@ -15,6 +15,7 @@ import DevelopmentTable from "./components/DevelopmentTable";
 import ColumnsTable from "./components/ColumnsTable";
 import ComplexTable from "./components/ComplexTable";
 import ExcelCard from "./components/ExelCard";
+
 const Tables = () => {
   const [tables, setTables] = useState([]);
   const Vista = (vista_A) => {
@@ -36,6 +37,7 @@ const Tables = () => {
           // tableData={tableDataColumns}
         />
       </div>
+
       <div className="grid grid-cols-1 gap-5 mt-5 h-full md:grid-cols-2">
         <DevelopmentTable
           columnsData={columnsDataDevelopment}
