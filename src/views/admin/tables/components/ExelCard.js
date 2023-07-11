@@ -10,6 +10,15 @@ const ExcelCard = (props) => {
   const [column7SumSelectedSheet, setColumn7SumSelectedSheet] = useState(0);
   const [RentabilidadNeta, setRentabilidadNeta] = useState(0);
 
+  
+  /* Cálculos del Excel - Word para las fórmulas */
+  let tomarLiquidez = false;
+  const razonLiquidezCorriente = [];
+  let tomarRapida = false;
+  const razonRapida = [];
+  let tomarAcido = false;
+  const pruebaDeAcido = [];
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -89,6 +98,16 @@ const ExcelCard = (props) => {
     }
   };
 
+  const calculoDeFormulas = () => {
+    return( 
+      <div className="calculoDeFormulas">
+        <h3>Razón de Liquidez Corriente: {(Math.ceil(razonLiquidezCorriente[0]/razonLiquidezCorriente[1] * 100) / 100).toFixed(2)}</h3>
+        <h3>Razón Rápida: {(Math.ceil((razonRapida[1]-razonRapida[0])/razonRapida[2] * 100) / 100).toFixed(2)}</h3>
+        {/* <h3>Prueba del Ácido: ${(Math.ceil(razonLiquidezCorriente[0]/razonLiquidezCorriente[1] * 100) / 100).toFixed(2)}</h3> */}
+      </div>
+    )
+  }
+
   return (
     <div className="bg-white rounded shadow p-4">
       <div className="text-lg font-semibold mb-4">Importar archivo Excel</div>
@@ -118,7 +137,7 @@ const ExcelCard = (props) => {
           className={`${activeSheet === table.sheetName ? "block" : "hidden"
             } mt-4 relative`}
         >
-          <h3 className="text-lg font-semibold">
+          {/* <h3 className="text-lg font-semibold">
             Suma de la columna 8: {Math.ceil(column8Sum * 100) / 100}
           </h3>
           {activeSheet && (
@@ -138,7 +157,7 @@ const ExcelCard = (props) => {
               Suma de la columna 7 (hoja {activeSheet}):{" "}
               {Math.ceil(column7SumSelectedSheet * 100) / 100}
             </h3>
-          )}
+          )} */}
           <h3 className="text-lg font-semibold namePage">{table.sheetName}</h3>
           <table className="table pTable">
             <thead>
@@ -153,15 +172,64 @@ const ExcelCard = (props) => {
                 <tr key={rowIndex} className={rowIndex%2 == 0 ? "filaPar" : `filaImpar`}>
                   {row.map((cell, cellIndex) => {
                     let cellValue = cell || ""; // Verificar si la celda es nula o indefinida
-                    if(cellValue && cellValue != "" && typeof cellValue != "string" && typeof cellValue === "number") {
-                      cellValue = Math.ceil(cellValue * 100) / 100;
+                    
+                    /* Redondear números a 2 decimales */
+                    try{
+                      if(typeof cellValue === "number") {
+                        cellValue = Math.ceil(cellValue * 100) / 100;
+                      }
+                    } catch(err){ }
+
+
+                    /* Obtener datos del Activo Corriente y Pasivo Corriente */
+                    tomarLiquidez && razonLiquidezCorriente.push(cellValue);
+
+                    try{
+                      if(cellValue.trim() == "activos corrientes" || cellValue.trim() == "pasivos corrientes"){
+                        tomarLiquidez = true;
+                      } else {
+                        tomarLiquidez = false;
+                      }
+                    } catch(err){
+                      tomarLiquidez = false;
                     }
+
+
+                    /* Obtener datos del Activo Corriente, Pasivo Corriente e Inventario */
+                    tomarRapida && razonRapida.push(cellValue);
+                    
+                    try{
+                      if(cellValue.trim() == "activos corrientes" || cellValue.trim() == "pasivos corrientes" || cellValue.trim() == "inventario"){
+                        tomarRapida = true;
+                      } else {
+                        tomarRapida = false;
+                      }
+                    } catch(err){
+                      tomarRapida = false;
+                    }
+
+                    /* Obtener datos del Activo Corriente, inventario, gastos pagados por adelantados, pasivos corrientes */
+                    // tomarRapida && razonRapida.push(cellValue);
+                    
+                    // try{
+                    //   if(cellValue.trim() == "activos corrientes" || cellValue.trim() == "pasivos corrientes"){
+                    //     tomarLiquidez = true;
+                    //   } else {
+                    //     tomarLiquidez = false;
+                    //   }
+                    // } catch(err){
+                    //   tomarLiquidez = false;
+                    // }
+
+
                     return <td key={cellIndex}>{cellValue}</td>;
                   })}
                 </tr>
               ))}
             </tbody>
           </table>
+          { table.sheetName == "BalanceGeneral2022" && console.log(`Indice 1: ${razonRapida[0]}, Índice 2: ${razonRapida[1]}, Índice 3: ${razonRapida[2]}`)}
+          { table.sheetName == "BalanceGeneral2022" && calculoDeFormulas() }
         </div>
       ))}
     </div>

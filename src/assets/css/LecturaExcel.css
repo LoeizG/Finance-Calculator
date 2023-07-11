@@ -59,3 +59,14 @@
 .filaImpar{
     background-color: #b1cffe;
 }
+
+/* Cálculo de Fórmulas */
+.calculoDeFormulas{
+    width: 210%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-top: 2%;
+}
