@@ -8,7 +8,8 @@ const ExcelCard = (props) => {
   const [column8SumSelectedSheet, setColumn8SumSelectedSheet] = useState(0);
   const [column10SumSelectedSheet, setColumn10SumSelectedSheet] = useState(0);
   const [column7SumSelectedSheet, setColumn7SumSelectedSheet] = useState(0);
-  const [RentabiliadNeta, setRentabilidadNeta] = useState(0);
+  const [RentabilidadNeta, setRentabilidadNeta] = useState(0);
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -34,7 +35,6 @@ const ExcelCard = (props) => {
       setTables(tableData);
       setActiveSheet(tableData[0]?.sheetName || "");
 
-      // Calcular la suma de la columna 8
       let sum = 0;
       tableData.forEach((table) => {
         table.data.slice(1).forEach((row) => {
@@ -56,7 +56,7 @@ const ExcelCard = (props) => {
     if (selectedTable) {
       let sumColumn8 = 0;
       let sumColumn10 = 0;
-      let sumColumn7 = 0; // Nueva variable para la suma de la columna 7 en la hoja "Compras 2022"
+      let sumColumn7 = 0;
 
       selectedTable.data.slice(1).forEach((row) => {
         const cellValueColumn8 = parseFloat(row[7]); // Columna 8 (el índice es 7 ya que los índices comienzan desde 0)
@@ -70,7 +70,6 @@ const ExcelCard = (props) => {
         }
       });
 
-      // Buscar la hoja "Compras 2022" y sumar los valores de la columna 4
       const compras2022Table = tables.find(
         (table) => table.sheetName === "Compras 2022"
       );
@@ -85,137 +84,85 @@ const ExcelCard = (props) => {
 
       setColumn8SumSelectedSheet(sumColumn8);
       setColumn10SumSelectedSheet(sumColumn10);
-      setColumn7SumSelectedSheet(sumColumn7); // Agregar la suma de la columna 4 en "Compras 2022" a la variable de estado
-
+      setColumn7SumSelectedSheet(sumColumn7);
       setRentabilidadNeta(sumColumn8 + sumColumn10);
     }
   };
+
   return (
-    <div className="card">
-      <div className="card-header">Importar archivo Excel</div>
-      <div className="card-body">
-        <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
-        {tables.map((table, index) => (
-          <div key={index}>
-            <button
-              className={activeSheet === table.sheetName ? "active " : ""}
-              onClick={() => handleSheetButtonClick(table.sheetName)}
-            >
-              {table.sheetName}
-            </button>
-          </div>
-        ))}
-        {tables.map((table, index) => (
-          <div
-            key={index}
-            style={{
-              display: activeSheet === table.sheetName ? "block" : "none",
-            }}
-          >
-            <h3>Suma de la columna 8: {column8Sum}</h3>
-            {activeSheet && (
-              <h3>
-                Suma de la columna 8 (hoja {activeSheet}):{" "}
-                {column8SumSelectedSheet}
-              </h3>
-            )}
-            {activeSheet && (
-              <h3>
-                Suma de la columna 10 (hoja {activeSheet}):{" "}
-                {column10SumSelectedSheet}
-              </h3>
-            )}
-            {activeSheet && (
-              <h3>
-                Suma de la columna 7 (hoja {activeSheet}):{" "}
-                {column7SumSelectedSheet}
-              </h3>
-            )}
-            <h3>{table.sheetName}</h3>
-            <table className="table">
-              <thead>
-                <tr>
-                  {table.data[0].map((header, headerIndex) => (
-                    <th key={headerIndex}>{header}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {table.data.slice(1).map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {row.map((cell, cellIndex) => {
-                      const cellValue = cell || ""; // Verificar si la celda es nula o indefinida
-                      return <td key={cellIndex}>{cellValue}</td>;
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ))}
-        <div></div>
+    <div className="bg-white rounded shadow p-4">
+      <div className="text-lg font-semibold mb-4">Importar archivo Excel</div>
+      <div>
+        <input
+          type="file"
+          accept=".xlsx, .xls"
+          className="border py-2 px-4 rounded"
+          onChange={handleFileChange}
+        />
       </div>
+      <div className="flex space-x-2 mt-4">
+        {tables.map((table, index) => (
+          <button
+            key={index}
+            className={`${activeSheet === table.sheetName ? "bg-blue-500 text-white" : ""
+              } py-2 px-4 rounded`}
+            onClick={() => handleSheetButtonClick(table.sheetName)}
+          >
+            {table.sheetName}
+          </button>
+        ))}
+      </div>
+      {tables.map((table, index) => (
+        <div
+          key={index}
+          className={`${activeSheet === table.sheetName ? "block" : "hidden"
+            } mt-4`}
+        >
+          <h3 className="text-lg font-semibold">
+            Suma de la columna 8: {column8Sum}
+          </h3>
+          {activeSheet && (
+            <h3 className="text-lg font-semibold">
+              Suma de la columna 8 (hoja {activeSheet}):{" "}
+              {column8SumSelectedSheet}
+            </h3>
+          )}
+          {activeSheet && (
+            <h3 className="text-lg font-semibold">
+              Suma de la columna 10 (hoja {activeSheet}):{" "}
+              {column10SumSelectedSheet}
+            </h3>
+          )}
+          {activeSheet && (
+            <h3 className="text-lg font-semibold">
+              Suma de la columna 7 (hoja {activeSheet}):{" "}
+              {column7SumSelectedSheet}
+            </h3>
+          )}
+          <h3 className="text-lg font-semibold">{table.sheetName}</h3>
+          <table className="table">
+            <thead>
+              <tr>
+                {table.data[0].map((header, headerIndex) => (
+                  <th key={headerIndex}>{header}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {table.data.slice(1).map((row, rowIndex) => (
+                <tr key={rowIndex}>
+                  {row.map((cell, cellIndex) => {
+                    const cellValue = cell || ""; // Verificar si la celda es nula o indefinida
+                    return <td key={cellIndex}>{cellValue}</td>;
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
     </div>
   );
 };
 
 export default ExcelCard;
-//
-// import React, { useState } from "react";
-// import * as XLSX from "xlsx";
-//
-// const ExcelCard = ({ onJsonData }) => {
-//   const handleFileChange = (event) => {
-//     const file = event.target.files[0];
-//     const reader = new FileReader();
-//
-//     reader.onload = (e) => {
-//       const data = new Uint8Array(e.target.result);
-//       const workbook = XLSX.read(data, { type: "array" });
-//
-//       const tableData = [];
-//
-//       workbook.SheetNames.forEach((sheetName) => {
-//         const worksheet = workbook.Sheets[sheetName];
-//         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-//
-//         const formattedData = jsonData.map((row) => {
-//           const formattedRow = row.map((cell, index) => {
-//             if (index === COLUMN_INDEX_TO_FORMAT && typeof cell === "number" && cell > 1) {
-//               const excelDateSerial = Math.floor(cell);
-//               const baseDate = new Date(Date.UTC(1899, 11, 30));
-//               const date = new Date(baseDate.getTime() + (excelDateSerial - 1) * 24 * 60 * 60 * 1000);
-//               return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-//             } else {
-//               return cell || "";
-//             }
-//           });
-//           return formattedRow;
-//         });
-//
-//         const table = {
-//           sheetName,
-//           data: formattedData,
-//         };
-//
-//         tableData.push(table);
-//       });
-//
-//       onJsonData(tableData);
-//     };
-//
-//     reader.readAsArrayBuffer(file);
-//   };
-//
-//   return (
-//     <div className="card">
-//       <div className="card-header">Importar archivo Excel</div>
-//       <div className="card-body">
-//         <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
-//       </div>
-//     </div>
-//   );
-// };
-//
-// export default ExcelCard;
-//
