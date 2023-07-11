@@ -29,7 +29,7 @@ const Tables = () => {
 
   return (
     <div>
-      <div className="grid grid-cols-1 gap-5 mt-5 h-full bg-red-200 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 mt-5 h-full bg-blue-100 rounded-[5px] md:grid-cols-2">
         <ExcelCard
           columnsData={Vista}
 
@@ -44,7 +44,7 @@ const Tables = () => {
         <CheckTable columnsData={columnsDataCheck} tableData={tableDataCheck} />
       </div>
 
-      <div className="grid grid-cols-1 gap-5 mt-5 h-full bg-red-200 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 mt-5 h-full bg-blue-100 rounded-[20px] md:grid-cols-2">
         <ColumnsTable
           columnsData={columnsDataColumns}
           tableData={tableDataColumns}
@@ -55,7 +55,7 @@ const Tables = () => {
           tableData={tableDataComplex}
         />
       </div>
-      <div className="grid grid-cols-1 gap-5 mt-5 h-full bg-red-200 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 mt-5 h-full bg-blue-100 rounded-[20px] md:grid-cols-2">
         <ColumnsTable
           columnsData={columnsDataVentasAnuales}
           tableData={tableDataColumns}

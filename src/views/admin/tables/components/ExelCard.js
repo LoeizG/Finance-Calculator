@@ -100,11 +100,11 @@ const ExcelCard = (props) => {
           onChange={handleFileChange}
         />
       </div>
-      <div className="flex space-x-2 mt-4">
+      <div className="categorias">
         {tables.map((table, index) => (
           <button
             key={index}
-            className={`${activeSheet === table.sheetName ? "bg-blue-500 text-white" : ""
+            className={`${activeSheet === table.sheetName ? "btnActivo" : "btnInactivo"
               } py-2 px-4 rounded`}
             onClick={() => handleSheetButtonClick(table.sheetName)}
           >
@@ -116,31 +116,31 @@ const ExcelCard = (props) => {
         <div
           key={index}
           className={`${activeSheet === table.sheetName ? "block" : "hidden"
-            } mt-4`}
+            } mt-4 relative`}
         >
           <h3 className="text-lg font-semibold">
-            Suma de la columna 8: {column8Sum}
+            Suma de la columna 8: {Math.ceil(column8Sum * 100) / 100}
           </h3>
           {activeSheet && (
             <h3 className="text-lg font-semibold">
               Suma de la columna 8 (hoja {activeSheet}):{" "}
-              {column8SumSelectedSheet}
+              {Math.ceil(column8SumSelectedSheet * 100) / 100}
             </h3>
           )}
           {activeSheet && (
             <h3 className="text-lg font-semibold">
               Suma de la columna 10 (hoja {activeSheet}):{" "}
-              {column10SumSelectedSheet}
+              {Math.ceil(column10SumSelectedSheet * 100) / 100}
             </h3>
           )}
           {activeSheet && (
             <h3 className="text-lg font-semibold">
               Suma de la columna 7 (hoja {activeSheet}):{" "}
-              {column7SumSelectedSheet}
+              {Math.ceil(column7SumSelectedSheet * 100) / 100}
             </h3>
           )}
-          <h3 className="text-lg font-semibold">{table.sheetName}</h3>
-          <table className="table">
+          <h3 className="text-lg font-semibold namePage">{table.sheetName}</h3>
+          <table className="table pTable">
             <thead>
               <tr>
                 {table.data[0].map((header, headerIndex) => (
@@ -150,9 +150,12 @@ const ExcelCard = (props) => {
             </thead>
             <tbody>
               {table.data.slice(1).map((row, rowIndex) => (
-                <tr key={rowIndex}>
+                <tr key={rowIndex} className={rowIndex%2 == 0 ? "filaPar" : `filaImpar`}>
                   {row.map((cell, cellIndex) => {
-                    const cellValue = cell || ""; // Verificar si la celda es nula o indefinida
+                    let cellValue = cell || ""; // Verificar si la celda es nula o indefinida
+                    if(cellValue && cellValue != "" && typeof cellValue != "string" && typeof cellValue === "number") {
+                      cellValue = Math.ceil(cellValue * 100) / 100;
+                    }
                     return <td key={cellIndex}>{cellValue}</td>;
                   })}
                 </tr>

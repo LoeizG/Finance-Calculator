@@ -1,0 +1,61 @@
+.categorias{
+    width: 210%;
+    margin-top: 2%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(175px, 3fr));
+    gap: 10px;
+}
+.btnActivo{
+    background-color: #0b68ff;
+    color: white;
+    transition: .5s;
+}
+.btnActivo:hover{
+    background-color: #075ae0;
+    color: white;
+}
+.btnInactivo{
+    background-color: #afcdfc;
+    color: black;
+    transition: .5s;
+}
+.btnInactivo:hover{
+    background-color: #95bdfc;
+}
+.namePage{
+    width: 210%;
+    background-color: #0b68ff;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 2% 0;
+    margin-top: 2%;
+    border-radius: 10px 10px 0 0;
+}
+.pTable{
+    position: static;
+    width: 210%;
+    text-align: center;
+    padding: 2% 0;
+}
+.pTable thead tr th{
+    color: white;
+    font-weight: bold;
+    background-color: #1d6ef1;
+    border: 1px solid black;
+    padding: 1% 0;
+}
+.pTable tbody tr td{
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    transition: .5s;
+}
+.pTable tbody tr:hover td{
+    background-color: #cde0ff;
+}
+.filaPar{
+    background-color: #95bdfc;
+}
+.filaImpar{
+    background-color: #b1cffe;
+}
