@@ -3,7 +3,8 @@ import React from "react";
 // Admin Imports
 import MainDashboard from "views/admin/default";
 import NFTMarketplace from "views/admin/marketplace";
-import Profile from "views/admin/profile";
+//import Profile from "views/admin/profile";
+import Balance from "views/admin/balance";
 import DataTables from "views/admin/tables";
 import RTLDefault from "views/rtl/default";
 
@@ -15,9 +16,10 @@ import {
   MdHome,
   MdOutlineShoppingCart,
   MdBarChart,
-  MdPerson,
+  MdMonetizationOn,
   MdLock,
 } from "react-icons/md";
+import { MdMoneyOff } from "react-icons/md";
 
 const routes = [
   {
@@ -43,11 +45,11 @@ const routes = [
     component: <DataTables />,
   },
   {
-    name: "Profile",
+    name: "Balance General",
     layout: "/admin",
-    path: "profile",
-    icon: <MdPerson className="h-6 w-6" />,
-    component: <Profile />,
+    path: "balance",
+    icon: <MdMonetizationOn className="h-6 w-6" />,
+    component: <Balance />,
   },
   {
     name: "Sign In",
