@@ -59,3 +59,43 @@
 .filaImpar{
     background-color: #b1cffe;
 }
+
+/* Cálculo de Fórmulas */
+.calculoDeFormulas{
+    margin-top: 3%;
+    width: 210%;
+    border: 1px solid #bccbe3;
+    border-radius: 20px;
+    background-color: #e5eefe;
+    padding: 5% 3%;
+}
+.calculoDeFormulas div{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+.calculoDeFormulas div h3{
+    width: 105%;
+}
+.calculoDeFormulas h1{
+    padding-bottom: 3%;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+.calculoDeFormulas :nth-child(2) h3{
+    border-bottom: 1px solid #959eba;
+    color: #959eba;
+    padding-bottom: 1% ;
+    margin-bottom: 1%;
+    font-weight: 800;
+}
+.calculoDeFormulas :nth-child(3){
+    display: block;
+}
+.calculoDeFormulas :nth-child(3) div{
+    width: 100%;
+    padding: 1% 0;
+}
+.calculoDeFormulas :nth-child(3) div p{
+    width: 50%;
+}

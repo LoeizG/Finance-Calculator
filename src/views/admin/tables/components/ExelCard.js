@@ -1,6 +1,52 @@
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
 
+/* Cálculos del Excel - Word para las fórmulas */
+let tomarLiquidez = false;
+const razonLiquidezCorriente = [];
+let tomarRapida = false;
+const razonRapida = [];
+let calculoDeFormulas = [];
+
+const DevelopmentCalculo = (razon1, razon2) => {
+
+  calculoDeFormulas = [
+    {
+      "key": "Razón de Liquidez Corriente",
+      "value": ((Math.ceil(razon1[0]/razon1[1] * 100) / 100).toFixed(2))
+    },
+    {
+      "key": "Razón Rápida",
+      "value": ((Math.ceil((razon2[1]-razon2[0])/razon2[2] * 100) / 100).toFixed(2))
+    }
+  ]
+
+  return (
+    <div className="calculoDeFormulas">
+      <h1>Cálculo de Razones</h1>
+      <div>
+        <h3>RAZÓN</h3>
+        <h3>VALOR</h3>  
+      </div>
+      <div>
+        { calculoDeFormulas.map((row, index) => {
+          return(
+            <div key={index}>
+              <p>{row.key}</p>
+              <p>{row.value}</p>
+            </div>
+          )
+        }) }
+      </div>
+    </div>
+  )
+}
+
+    // <div className="calculoDeFormulas">
+    //   <h3>Razón de Liquidez Corriente: {(Math.ceil(razonLiquidezCorriente[0]/razonLiquidezCorriente[1] * 100) / 100).toFixed(2)}</h3>
+    //   <h3>Razón Rápida: {(Math.ceil((razonRapida[1]-razonRapida[0])/razonRapida[2] * 100) / 100).toFixed(2)}</h3>
+    // </div>
+
 const ExcelCard = (props) => {
   const [tables, setTables] = useState([]);
   const [activeSheet, setActiveSheet] = useState("");
@@ -90,35 +136,38 @@ const ExcelCard = (props) => {
   };
 
   return (
-    <div className="bg-white rounded shadow p-4">
-      <div className="text-lg font-semibold mb-4">Importar archivo Excel</div>
-      <div>
-        <input
-          type="file"
-          accept=".xlsx, .xls"
-          className="border py-2 px-4 rounded"
-          onChange={handleFileChange}
-        />
-      </div>
-      <div className="categorias">
+    <>
+      <div className="rounded bg-white p-4 shadow">
+        <div className="mb-4 text-lg font-semibold">Importar archivo Excel</div>
+        <div>
+          <input
+            type="file"
+            accept=".xlsx, .xls"
+            className="rounded border py-2 px-4"
+            onChange={handleFileChange}
+          />
+        </div>
+        <div className="categorias">
+          {tables.map((table, index) => (
+            <button
+              key={index}
+              className={`${
+                activeSheet === table.sheetName ? "btnActivo" : "btnInactivo"
+              } rounded py-2 px-4`}
+              onClick={() => handleSheetButtonClick(table.sheetName)}
+            >
+              {table.sheetName}
+            </button>
+          ))}
+        </div>
         {tables.map((table, index) => (
-          <button
+          <div
             key={index}
-            className={`${activeSheet === table.sheetName ? "btnActivo" : "btnInactivo"
-              } py-2 px-4 rounded`}
-            onClick={() => handleSheetButtonClick(table.sheetName)}
+            className={`${
+              activeSheet === table.sheetName ? "block" : "hidden"
+            } relative mt-4`}
           >
-            {table.sheetName}
-          </button>
-        ))}
-      </div>
-      {tables.map((table, index) => (
-        <div
-          key={index}
-          className={`${activeSheet === table.sheetName ? "block" : "hidden"
-            } mt-4 relative`}
-        >
-          <h3 className="text-lg font-semibold">
+            {/* <h3 className="text-lg font-semibold">
             Suma de la columna 8: {Math.ceil(column8Sum * 100) / 100}
           </h3>
           {activeSheet && (
@@ -138,33 +187,78 @@ const ExcelCard = (props) => {
               Suma de la columna 7 (hoja {activeSheet}):{" "}
               {Math.ceil(column7SumSelectedSheet * 100) / 100}
             </h3>
-          )}
-          <h3 className="text-lg font-semibold namePage">{table.sheetName}</h3>
-          <table className="table pTable">
-            <thead>
-              <tr>
-                {table.data[0].map((header, headerIndex) => (
-                  <th key={headerIndex}>{header}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {table.data.slice(1).map((row, rowIndex) => (
-                <tr key={rowIndex} className={rowIndex%2 == 0 ? "filaPar" : `filaImpar`}>
-                  {row.map((cell, cellIndex) => {
-                    let cellValue = cell || ""; // Verificar si la celda es nula o indefinida
-                    if(cellValue && cellValue != "" && typeof cellValue != "string" && typeof cellValue === "number") {
-                      cellValue = Math.ceil(cellValue * 100) / 100;
-                    }
-                    return <td key={cellIndex}>{cellValue}</td>;
-                  })}
+          )} */}
+            <h3 className="namePage text-lg font-semibold">
+              {table.sheetName}
+            </h3>
+            <table className="pTable table">
+              <thead>
+                <tr>
+                  {table.data[0].map((header, headerIndex) => (
+                    <th key={headerIndex}>{header}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ))}
-    </div>
+              </thead>
+              <tbody>
+                {table.data.slice(1).map((row, rowIndex) => (
+                  <tr
+                    key={rowIndex}
+                    className={rowIndex % 2 == 0 ? "filaPar" : `filaImpar`}
+                  >
+                    {row.map((cell, cellIndex) => {
+                      let cellValue = cell || ""; // Verificar si la celda es nula o indefinida
+
+                      /* Redondear números a 2 decimales */
+                      try {
+                        if (typeof cellValue === "number") {
+                          cellValue = Math.ceil(cellValue * 100) / 100;
+                        }
+                      } catch (err) {}
+
+                      /* Obtener datos del Activo Corriente y Pasivo Corriente */
+                      tomarLiquidez && razonLiquidezCorriente.push(cellValue);
+
+                      try {
+                        if (
+                          cellValue.trim() == "activos corrientes" ||
+                          cellValue.trim() == "pasivos corrientes"
+                        ) {
+                          tomarLiquidez = true;
+                        } else {
+                          tomarLiquidez = false;
+                        }
+                      } catch (err) {
+                        tomarLiquidez = false;
+                      }
+
+                      /* Obtener datos del Activo Corriente, Pasivo Corriente e Inventario */
+                      tomarRapida && razonRapida.push(cellValue);
+
+                      try {
+                        if (
+                          cellValue.trim() == "activos corrientes" ||
+                          cellValue.trim() == "pasivos corrientes" ||
+                          cellValue.trim() == "inventario"
+                        ) {
+                          tomarRapida = true;
+                        } else {
+                          tomarRapida = false;
+                        }
+                      } catch (err) {
+                        tomarRapida = false;
+                      }
+
+                      return <td key={cellIndex}>{cellValue}</td>;
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            { table.sheetName == "BalanceGeneral2022" && DevelopmentCalculo(razonLiquidezCorriente, razonRapida) }
+          </div>
+        ))}
+      </div>
+    </>
   );
 };
 
