@@ -13,7 +13,7 @@ import {
 } from "react-table";
 import Progress from "components/progress";
 
-const Balance = (props) => {
+const Activos = (props) => {
   const { columnsData, tableData } = props;
 
   const columns = useMemo(() => columnsData, [columnsData]);
@@ -41,7 +41,12 @@ const Balance = (props) => {
 
   return (
     <Card extra={"w-[75%] h-full p-4 mx-auto"}>
-      
+       <div className="relative flex items-center justify-between">
+        <div className="text-xl font-bold text-navy-700 dark:text-white">
+          Activos
+        </div>
+       
+      </div>
 
       <div class="h-full mx-10 overflow-x-scroll xl:overflow-x-hidden">
         <table
@@ -76,14 +81,7 @@ const Balance = (props) => {
                 <tr {...row.getRowProps()} key={index}>
                   {row.cells.map((cell, index) => {
                     let data = "";
-                    if (cell.column.Header === "CUENTA" && (cell.value === "Activos corrientes" || cell.value === "Activos fijos netos")) {
-                      data = (
-                        <p className="text-sm font-bold ml-5 text-navy-700 dark:text-white">
-                          {cell.value}
-                        </p>
-                      );
-                    
-                    } else if (cell.column.Header === "CUENTA") {
+                    if (cell.column.Header === "CUENTA") {
                       data = (
                         <p className="text-sm font-bold text-navy-700 dark:text-white">
                           {cell.value}
@@ -95,7 +93,7 @@ const Balance = (props) => {
                       
                         <p className="text-sm font-bold text-navy-700 dark:text-white">
                           $
-                          <b className="text-sm font-bold ml-5 text-navy-700 dark:text-white">
+                          <b className="text-sm font-bold ml-3 text-navy-700 dark:text-white">
                           {cell.value}
                           </b> 
                         </p>
@@ -130,4 +128,4 @@ const Balance = (props) => {
   );
 };
 
-export default Balance;
+export default Activos;
