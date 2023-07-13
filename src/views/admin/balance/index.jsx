@@ -12,6 +12,7 @@ import tableDataPasivos from "./variables/tableDataPasivos.json";
 
 import Activos from "./components/Activos";
 import Pasivos from "./components/Pasivos";
+import Calculadora from "./components/Calculadora";
 
 import ExcelCard from "./components/ExelCard";
 const Tables = () => {
@@ -46,6 +47,11 @@ const Tables = () => {
         <Pasivos
           columnsData={columnsDataDevelopment}
           tableData={tableDataPasivos}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-5 mt-5 h-full md:grid-cols-1">
+        <Calculadora
         />
       </div>
 
