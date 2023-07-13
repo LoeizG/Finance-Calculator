@@ -34,7 +34,7 @@ const LoanCalculator = () => {
         <input type="number" value={loanAmount} onChange={(e) => setLoanAmount(e.target.value)} />
       </div>
       <div>
-        <label>Tasa de interés efectiva (%):</label>
+        <label>Tasa de interés (%):</label>
         <input type="number" value={interestRate} onChange={(e) => setInterestRate(e.target.value)} />
       </div>
       <div>
