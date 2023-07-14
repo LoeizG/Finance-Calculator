@@ -20,10 +20,10 @@ const LoanCalculator = () => {
 
 	const calculateLoan = () => {
 		const principal = parseFloat(loanAmount);
-		const interest = (parseFloat(interestRate) / 100) / 12;
+		const interest = Math.pow(1 + ( ((parseFloat(interestRate) / 100)) / 12 ), 12) -1 ;
 		const period = parseInt(loanPeriod);
 		const paidPeriod = parseInt(paidPeriods);
-
+		
 
 		setTotalapagar( (principal * Math.pow(1 + interest, period)));
 
@@ -37,12 +37,12 @@ const LoanCalculator = () => {
 		setShowWidget(true);
 		console.log('Prestamo:', principal.toFixed(2));
 
-		console.log('interes:', interest.toFixed(8));
+		console.log('Tasa de interes efectiva:', interest.toFixed(8));
 		console.log('periodos:', period);
-		console.log('periodos pagados:', paidPeriod );
+		console.log('periodos pagados:', totalPayed.toFixed(0 ));
 		console.log('pagos faltantes:', pagosFaltantes.toFixed(8)); 
 
-		console.log('total pagado:', totalPayed);
+		console.log('total pagado:', period.toFixed(2));
 		console.log('deuda actual:', remainingPayment);
 		CalculoParaJSON();
 	};
@@ -61,7 +61,12 @@ const LoanCalculator = () => {
 			const jsonData = [
 				{
 					"name": "Prestamo bancario",
-					"date": deudaCortoPlazo
+					"date": deudaCortoPlazo.toLocaleString("eng-US",
+					{
+						style: "decimal",
+						maximumFractionDigits: 2,
+						minimumFractionDigits: 2
+					})
 				},
 				{
 					"name": "Cuentas por Pagar",
@@ -69,15 +74,30 @@ const LoanCalculator = () => {
 				},
 				{
 					"name": "Pasivos corrientes",
-					"date": (deudaCortoPlazo + 1065)
+					"date": (deudaCortoPlazo + 1065).toLocaleString("eng-US",
+					{
+						style: "decimal",
+						maximumFractionDigits: 2,
+						minimumFractionDigits: 2
+					})
 				},
 				{
 					"name": "Deuda a largo plazo",
-					"date": deudaLargoPlazo
+					"date": deudaLargoPlazo.toLocaleString("eng-US",
+					{
+						style: "decimal",
+						maximumFractionDigits: 2,
+						minimumFractionDigits: 2
+					})
 				},
 				{
 					"name": "Pasivos Totales",
-					"date": ((deudaLargoPlazo + 1065) + deudaCortoPlazo)
+					"date": ((deudaLargoPlazo + 1065) + deudaCortoPlazo).toLocaleString("eng-US",
+					{
+						style: "decimal",
+						maximumFractionDigits: 2,
+						minimumFractionDigits: 2
+					})
 				},];
 
 			fetch('http://localhost:3001/src/views/admin/balance', {
@@ -169,7 +189,7 @@ const LoanCalculator = () => {
 					<input type="number" value={loanAmount} onChange={(e) => setLoanAmount(e.target.value)} className="w-1/2 p-2 ml-2 border-2 border-blue-900 " />
 				</div>
 				<div className="flex justify-center items-center">
-					<label className="block mb-2">Tasa de interés (%):</label>
+					<label className="block mb-2">Tasa de interés anual (%):</label>
 					<input type="number" value={interestRate} onChange={(e) => setInterestRate(e.target.value)} className="w-1/2 p-2 ml-2 border-2 border-blue-900  " />
 				</div>
 				<div className="flex justify-center items-center">
