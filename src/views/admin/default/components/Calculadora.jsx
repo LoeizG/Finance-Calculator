@@ -20,7 +20,7 @@ const LoanCalculator = () => {
 
 	const calculateLoan = () => {
 		const principal = parseFloat(loanAmount);
-		const interest = Math.pow(1 + ( ((parseFloat(interestRate) / 100)) / 12 ), 12) -1 ;
+		const interest = (parseFloat(interestRate) / 100) ;
 		const period = parseInt(loanPeriod);
 		const paidPeriod = parseInt(paidPeriods);
 		
