@@ -1,10 +1,23 @@
 import React, { useState } from 'react';
 import Widget from "components/widget/Widget";
+import { IoMdHome } from "react-icons/io";
+import { IoDocuments } from "react-icons/io5";
+import { MdBarChart, MdDashboard } from "react-icons/md";
+
 const LoanCalculator = () => {
 	const [loanAmount, setLoanAmount] = useState('');
 	const [interestRate, setInterestRate] = useState('');
 	const [loanPeriod, setLoanPeriod] = useState('');
 	const [paidPeriods, setPaidPeriods] = useState('');
+
+	const [Totalapagar, setTotalapagar] = useState(0);
+	const [monthlyPayment, setmonthlyPayment] = useState(0);
+	const [totalPayed, settotalPayed] = useState(0);
+	const [remainingPayment, setremainingPayment] = useState(0);
+	const [pagosFaltantes, setpagosFaltantes] = useState(0);
+
+	const [showWidget, setShowWidget] = useState(false);
+
 	const calculateLoan = () => {
 		const principal = parseFloat(loanAmount);
 		const interest = (parseFloat(interestRate) / 100) / 12;
@@ -12,23 +25,35 @@ const LoanCalculator = () => {
 		const paidPeriod = parseInt(paidPeriods);
 
 
-		const Totalapagar = (principal * Math.pow(1 + interest, period));
-		const monthlyPayment = principal * (((interest * Math.pow(1 + interest, period))) / ((Math.pow(1 + interest, period) - 1)));
-		const totalPayed = monthlyPayment * ((Math.pow(1 + interest, paidPeriod) - 1) / interest);
+		setTotalapagar( (principal * Math.pow(1 + interest, period)));
 
-		const remainingPayment = ((principal * Math.pow(1 + interest, paidPeriod))) - totalPayed;
+		setmonthlyPayment(principal * (((interest * Math.pow(1 + interest, period))) / ((Math.pow(1 + interest, period) - 1))));
 
-		console.log('Total a pagar:', Totalapagar.toFixed(2));
-		console.log('Pago mensual:', monthlyPayment.toFixed(2));
-		console.log('Pagado a la fecha:', totalPayed.toFixed(2));
-		console.log('Deuda actual:', remainingPayment.toFixed(2));
-		CalculoParaJSON(period, paidPeriod, interest, monthlyPayment);
+		settotalPayed(monthlyPayment * ((Math.pow(1 + interest, paidPeriod) - 1) / interest));
+
+		setremainingPayment(((principal * Math.pow(1 + interest, paidPeriod))) - totalPayed); 
+
+		
+		setShowWidget(true);
+		console.log('Prestamo:', principal.toFixed(2));
+
+		console.log('interes:', interest.toFixed(8));
+		console.log('periodos:', period);
+		console.log('periodos pagados:', paidPeriod );
+		console.log('pagos faltantes:', pagosFaltantes.toFixed(8)); 
+
+		console.log('total pagado:', totalPayed);
+		console.log('deuda actual:', remainingPayment);
+		CalculoParaJSON();
 	};
 
-	const CalculoParaJSON = (period, paidPeriod, interest, monthlyPayment) => {
+	const CalculoParaJSON = () => {
+		const interest = (parseFloat(interestRate) / 100) / 12;
+		const period = parseInt(loanPeriod);
+		const paidPeriod = parseInt(paidPeriods);
+		const principal = parseFloat(loanAmount);
 
-
-		const pagosFaltantes = period - paidPeriod;
+		setpagosFaltantes(period - paidPeriod); 
 
 		if (pagosFaltantes <= 12) {
 			const deudaCortoPlazo = monthlyPayment * ((Math.pow(1 + interest, pagosFaltantes) - 1) / interest);
@@ -137,7 +162,8 @@ const LoanCalculator = () => {
 
 	return (
 		<div>
-			<div className="grid grid-cols-2 gap-8 mt-5 bg-white p-5 rounded-lg">
+
+			<div className="grid grid-cols-2 gap-8 mt-5 w-4/6 bg-white p-8  mx-auto mb-10 rounded-lg">
 				<div className="flex justify-center items-center">
 					<label className="block mb-2">Monto del préstamo:</label>
 					<input type="number" value={loanAmount} onChange={(e) => setLoanAmount(e.target.value)} className="w-1/2 p-2 ml-2 border-2 border-blue-900 " />
@@ -156,6 +182,45 @@ const LoanCalculator = () => {
 				</div>
 				<button onClick={calculateLoan} className="bg-blue-500 text-white px-4 py-2 mx-auto px-20 col-span-2">Calcular</button>
 			</div>
+			
+			{showWidget && (
+				<div className="grid grid-cols-1 gap-5 mt- md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 w-full 3xl:grid-cols-6">
+					<Widget
+						icon={<MdBarChart className="w-7 h-7" />}
+						title={"Total a Pagar"}
+						subtitle={(Totalapagar.toLocaleString('en-US',
+						 { style: 'currency', currency: 'USD' }))}
+					/>
+					<Widget
+						icon={<IoDocuments className="w-6 h-6" />}
+						title={"Pago Mensual"}
+						subtitle={(monthlyPayment.toLocaleString('en-US',
+						{ style: 'currency', currency: 'USD' }))}
+					/>
+					<Widget
+						icon={<MdBarChart className="w-7 h-7" />}
+						title={"Pagado a la fecha"}
+						subtitle={(totalPayed.toLocaleString('en-US',
+						{ style: 'currency', currency: 'USD' }))}
+					/>
+					<Widget
+						icon={<MdDashboard className="w-6 h-6" />}
+						title={"Deuda Actual"}
+						subtitle={(remainingPayment.toLocaleString('en-US',
+						{ style: 'currency', currency: 'USD' }))}
+					/>
+					<Widget
+						icon={<MdBarChart className="w-7 h-7" />}
+						title={"Pagos Faltantes"}
+						subtitle={pagosFaltantes}
+					/>
+
+				</div>
+				)};
+			
+			
+
+
 		</div>
 	);
 };
