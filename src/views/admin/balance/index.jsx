@@ -50,11 +50,6 @@ const Tables = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-5 mt-5 h-full md:grid-cols-1">
-        <Calculadora
-        />
-      </div>
-
 
 
 

@@ -16,10 +16,17 @@ import TaskCard from "views/admin/default/components/TaskCard";
 import tableDataCheck from "./variables/tableDataCheck.json";
 import tableDataComplex from "./variables/tableDataComplex.json";
 
+import Calculadora from "./components/Calculadora";
+
 const Dashboard = () => {
   return (
+
     <div>
       {/* Card widget */}
+      <div className="grid  grid-cols-1 gap-4 mt-5 h-full w-4/6 mx-auto mb-10 md:grid-cols-1">
+        <Calculadora
+        />
+      </div>
 
       <div className="grid grid-cols-1 gap-5 mt-3 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 3xl:grid-cols-6">
         <Widget
@@ -53,18 +60,16 @@ const Dashboard = () => {
           subtitle={"$2933"}
         />
       </div>
-
+      
       {/* Charts */}
-
+    {/*
       <div className="grid grid-cols-1 gap-5 mt-5 md:grid-cols-2">
         <TotalSpent />
         <WeeklyRevenue />
       </div>
 
-      {/* Tables & Charts */}
-
       <div className="grid grid-cols-1 gap-5 mt-5 xl:grid-cols-2">
-        {/* Check Table */}
+  
         <div>
           <CheckTable
             columnsData={columnsDataCheck}
@@ -72,21 +77,20 @@ const Dashboard = () => {
           />
         </div>
 
-        {/* Traffic chart & Pie Chart */}
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 rounded-[20px]">
           <DailyTraffic />
           <PieChartCard />
         </div>
 
-        {/* Complex Table , Task & Calendar */}
+      
 
         <ComplexTable
           columnsData={columnsDataComplex}
           tableData={tableDataComplex}
         />
 
-        {/* Task chart & Calendar */}
+        
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 rounded-[20px]">
           <TaskCard />
@@ -95,6 +99,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+    </div> */}
     </div>
   );
 };
