@@ -18,6 +18,10 @@ const DevelopmentCalculo = (razon1, razon2) => {
     {
       "key": "Razón Rápida",
       "value": ((Math.ceil((razon2[1]-razon2[0])/razon2[2] * 100) / 100).toFixed(2))
+    },
+    {
+      "key": "Ratio de Endeudamiento",
+      "value": ((Math.ceil(razon1[1]/(razon1[0]-razon1[1]) * 100) / 100).toFixed(2))
     }
   ]
 
