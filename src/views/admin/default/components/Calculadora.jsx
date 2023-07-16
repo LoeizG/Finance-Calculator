@@ -10,7 +10,7 @@ const LoanCalculator = () => {
 	const [loanPeriod, setLoanPeriod] = useState('');
 	const [paidPeriods, setPaidPeriods] = useState('');
 
-	const [showWidget, setShowWidget] = useState(false);
+  const [showWidget, setShowWidget] = useState(false);
 
 	const [calculatedValues, setCalculatedValues] = useState({
 		Totalapagar: 0,
@@ -50,50 +50,52 @@ const LoanCalculator = () => {
 			  
 			  
 
-		if (pagosFaltantes <= 12) {
-			const deudaCortoPlazo = monthlyPayment * ((Math.pow(1 + interest, pagosFaltantes) - 1) / interest);
-			const deudaLargoPlazo = 0;
-			const jsonData = [
-				{
-					"name": "Prestamo bancario",
-					"date": deudaCortoPlazo.toLocaleString("eng-US",
-					{
-						style: "decimal",
-						maximumFractionDigits: 2,
-						minimumFractionDigits: 2
-					})
-				},
-				{
-					"name": "Cuentas por Pagar",
-					"date": "1,065.00"
-				},
-				{
-					"name": "Pasivos corrientes",
-					"date": (deudaCortoPlazo + 1065).toLocaleString("eng-US",
-					{
-						style: "decimal",
-						maximumFractionDigits: 2,
-						minimumFractionDigits: 2
-					})
-				},
-				{
-					"name": "Deuda a largo plazo",
-					"date": deudaLargoPlazo.toLocaleString("eng-US",
-					{
-						style: "decimal",
-						maximumFractionDigits: 2,
-						minimumFractionDigits: 2
-					})
-				},
-				{
-					"name": "Pasivos Totales",
-					"date": ((deudaLargoPlazo + 1065) + deudaCortoPlazo).toLocaleString("eng-US",
-					{
-						style: "decimal",
-						maximumFractionDigits: 2,
-						minimumFractionDigits: 2
-					})
-				},];
+    if (pagosFaltantes <= 12) {
+      const deudaCortoPlazo =
+        monthlyPayment *
+        ((Math.pow(1 + interest, pagosFaltantes) - 1) / interest);
+      const deudaLargoPlazo = 0;
+      const jsonData = [
+        {
+          name: "Prestamo bancario",
+          date: deudaCortoPlazo.toLocaleString("eng-US", {
+            style: "decimal",
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+          }),
+        },
+        {
+          name: "Cuentas por Pagar",
+          date: "1,065.00",
+        },
+        {
+          name: "Pasivos corrientes",
+          date: (deudaCortoPlazo + 1065).toLocaleString("eng-US", {
+            style: "decimal",
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+          }),
+        },
+        {
+          name: "Deuda a largo plazo",
+          date: deudaLargoPlazo.toLocaleString("eng-US", {
+            style: "decimal",
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+          }),
+        },
+        {
+          name: "Pasivos Totales",
+          date: (deudaLargoPlazo + 1065 + deudaCortoPlazo).toLocaleString(
+            "eng-US",
+            {
+              style: "decimal",
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            }
+          ),
+        },
+      ];
 
 			fetch('http://localhost:3001/api/OverwritePasivos', {
 				method: 'POST',
