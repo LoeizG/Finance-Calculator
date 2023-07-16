@@ -1,56 +1,17 @@
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import moment from "moment";
-/* Cálculos del Excel - Word para las fórmulas */
-let tomarLiquidez = false;
-const razonLiquidezCorriente = [];
-let tomarRapida = false;
-const razonRapida = [];
-let calculoDeFormulas = [];
 
-const DevelopmentCalculo = (razon1, razon2) => {
-
-  calculoDeFormulas = [
-    {
-      "key": "Razón de Liquidez Corriente",
-      "value": ((Math.ceil(razon1[0]/razon1[1] * 100) / 100).toFixed(2))
-    },
-    {
-      "key": "Razón Rápida",
-      "value": ((Math.ceil((razon2[1]-razon2[0])/razon2[2] * 100) / 100).toFixed(2))
-    }
-  ]
-
-  return (
-    <div className="calculoDeFormulas">
-      <h1>Cálculo de Razones</h1>
-      <div>
-        <h3>RAZÓN</h3>
-        <h3>VALOR</h3>  
-      </div>
-      <div>
-        { calculoDeFormulas.map((row, index) => {
-          return(
-            <div key={index}>
-              <p>{row.key}</p>
-              <p>{row.value}</p>
-            </div>
-          )
-        }) }
-      </div>
-    </div>
-  )
-}
-
-    // <div className="calculoDeFormulas">
-    //   <h3>Razón de Liquidez Corriente: {(Math.ceil(razonLiquidezCorriente[0]/razonLiquidezCorriente[1] * 100) / 100).toFixed(2)}</h3>
-    //   <h3>Razón Rápida: {(Math.ceil((razonRapida[1]-razonRapida[0])/razonRapida[2] * 100) / 100).toFixed(2)}</h3>
-    // </div>
+import compras from "../../../../variables/Compras 2022.json"
+import costosOp from "../../../../variables/Costos op..json"
+import inventario from "../../../../variables/Inventario 2022.json"
+import ventas from "../../../../variables/Ventas anuales 2022.json"
 
 const ExcelCard = (props) => {
   const [tables, setTables] = useState([]);
   const [activeSheet, setActiveSheet] = useState("");
   const [key, setKey] = useState(0);
+ 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -77,7 +38,7 @@ const ExcelCard = (props) => {
         const finalTransformedData = transformedData.map((row) => {
           const transformedRow = {};
           Object.keys(row).forEach((key) => {
-            if (key === 'Fecha' || key === 'Fecha de cancelación') {
+            if (key === 'Fecha' || key === 'fecha' || key === 'Fecha de cancelación') {
               const fechaNumerica = row[key];
               const fecha = moment(new Date(1900, 0, fechaNumerica - 1));
               const fechaFormateada = fecha.format('YYYY');
@@ -113,46 +74,215 @@ const ExcelCard = (props) => {
           console.error('Error al enviar los datos al servidor:', error);
         });
     
+        gentable();
     };
 
     reader.readAsArrayBuffer(file);
   };
 
-  const handleSheetButtonClick = (sheetName) => {
-    setActiveSheet(sheetName);
-    const selectedTable = tables.find((table) => table.sheetName === sheetName);
-    if (selectedTable) {
-      let sumColumn8 = 0;
-      let sumColumn10 = 0;
-      let sumColumn7 = 0;
+  const gentable = () => {
 
-      selectedTable.data.slice(1).forEach((row) => {
-        const cellValueColumn8 = parseFloat(row[7]); // Columna 8 (el índice es 7 ya que los índices comienzan desde 0)
-        const cellValueColumn10 = parseFloat(row[9]); // Columna 10 (el índice es 9)
+    const dataCompras = compras;
+    const dataCostosOp = costosOp;
+    const dataInventario = inventario;
+    const dataVentas = ventas;
+    
+    let totalAbonado = 0;
+    let totalCancelado = 0;
+    let totalPorCobrar = 0;
 
-        if (!isNaN(cellValueColumn8)) {
-          sumColumn8 += cellValueColumn8;
+    let totalComprado = 0;
+    let totalPorPagar = 0;
+    let totalCostosOp = 0;
+
+    let totalInventario = 0;
+
+    let activosFijosCosto = 40000;
+
+    let activosFijosNetos = activosFijosCosto * (0.9 ** 3);
+
+    let depreciacionAc = 0;
+  
+    dataVentas.forEach((item) => {
+      if(item.fecha === "2022"){
+        totalAbonado += item["Abono (50%)"] ;
+      }
+      if(item["Fecha de cancelación"] === "2022"){
+        totalCancelado += item.Cancelación;
+      }else if(item["Fecha de cancelación"] === "2023"){
+        totalPorCobrar += item.Cancelación;
+      }
+    });
+
+    dataCompras.forEach((item) => {
+      if(item.Fecha === "2022"){
+        totalComprado += item.Abono ;
+      }
+      if(item["Fecha de cancelación"] === "2022"){
+        totalComprado += item.Cancelación;
+      }else if(item.Fecha === "2022" && item["Fecha de cancelación"] === "2023"){
+        totalPorPagar += item.Cancelación;
+      }
+    });
+
+     totalCostosOp = dataCostosOp.reduce((sum, obj) => {
+      for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          sum += obj[key];
         }
-        if (!isNaN(cellValueColumn10)) {
-          sumColumn10 += cellValueColumn10;
-        }
+      }
+      return sum; }, 0);
+
+    totalCostosOp *= 12;
+
+    const costoPorProdTotal = {};
+
+    dataInventario.forEach((item) => {
+      const producto = item.Producto;
+      const costoPorProd = item['Costo por prod.'];
+
+      if (costoPorProd !== undefined) {
+        costoPorProdTotal[producto] = costoPorProd;
+      }
+    });
+    
+    Object.values(costoPorProdTotal).forEach((costo) => {
+      totalInventario += costo;
+    });
+
+    depreciacionAc = activosFijosCosto - activosFijosNetos;
+  
+    let efectivo = (totalAbonado + totalCancelado) - (totalComprado + totalCostosOp);
+
+    let activosCorrientes = (efectivo + totalPorCobrar + totalInventario);
+
+    console.log("Efectivo: ", efectivo);
+
+    const jsonActivos = [
+      {
+        "name": "Efectivo",
+        "date": efectivo.toLocaleString("eng-US",
+          {
+            style: "decimal",
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2
+          })
+      },
+      {
+        "name": "Cuentas por cobrar",
+        "date": totalPorCobrar.toLocaleString("eng-US",
+          {
+            style: "decimal",
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2
+          })
+      },
+      {
+        "name": "Inventario",
+        "date": totalInventario.toLocaleString("eng-US",
+          {
+            style: "decimal",
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2
+          })
+      },
+      {
+        "name": "Activos corrientes",
+        "date": activosCorrientes.toLocaleString("eng-US",
+          {
+            style: "decimal",
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2
+          })
+      },
+      {
+        "name": "Activos fijos al costo",
+        "date": activosFijosCosto.toLocaleString("eng-US",
+          {
+            style: "decimal",
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2
+          })
+      },
+      {
+        "name": "Depreciación acumulada",
+        "date": depreciacionAc.toLocaleString("eng-US",
+          {
+            style: "decimal",
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2
+          })
+      },
+      {
+        "name": "Activos fijos netos",
+        "date": activosFijosNetos.toLocaleString("eng-US",
+          {
+            style: "decimal",
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2
+          })
+      },
+      {
+        "name": "Activos Totales",
+        "date": (activosCorrientes + activosFijosNetos).toLocaleString("eng-US",
+          {
+            style: "decimal",
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2
+          })
+      },];
+
+    fetch('http://localhost:3001/api/OverwriteActivos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(jsonActivos)
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.message);
+      })
+      .catch(error => {
+        console.error('Error al enviar los datos al servidor:', error);
       });
 
-      const compras2022Table = tables.find(
-        (table) => table.sheetName === "Compras 2022"
-      );
-      if (compras2022Table) {
-        compras2022Table.data.slice(1).forEach((row) => {
-          const cellValueColumn4 = parseFloat(row[4]); // Columna 4 (el índice es 3)
-          if (!isNaN(cellValueColumn4)) {
-            sumColumn7 += cellValueColumn4;
-          }
-        });
-      }
+      const jsonPasivos = [
+        {
+          "name": "Cuentas por pagar",
+          "date": totalPorPagar.toLocaleString("eng-US",
+            {
+              style: "decimal",
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2
+            })
+        },
+        {
+          "name": "Patrimonio neto",
+          "date": ((activosCorrientes + activosFijosNetos) - totalPorPagar).toLocaleString("eng-US",
+            {
+              style: "decimal",
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2
+            })
+        },]
+        fetch('http://localhost:3001/api/OverwritePasivos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(jsonPasivos)
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data.message);
+          })
+          .catch(error => {
+            console.error('Error al enviar los datos al servidor:', error);
+          });
 
-    
-    }
   };
+
 
   return (
     <>

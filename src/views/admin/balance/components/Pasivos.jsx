@@ -43,12 +43,12 @@ const Pasivos = (props) => {
     <Card extra={"w-[75%] h-full p-4 mx-auto"}>
        <div className="relative flex items-center justify-between">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
-          Pasivos
+          Pasivos y patrimonio neto
         </div>
        
       </div>
 
-      <div class="h-full mx-10 overflow-x-scroll xl:overflow-x-hidden">
+      <div className="h-full mx-10 overflow-x-scroll xl:overflow-x-hidden">
         <table
           {...getTableProps()}
           className="mt-8 h-max w-full"

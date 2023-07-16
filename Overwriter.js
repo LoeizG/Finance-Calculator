@@ -14,8 +14,22 @@ app.use(cors({
 }));
 
 app.post('/api/OverwritePasivos', (req, res) => {
-  const jsonData = req.body; // Datos calculados del cliente
+  const jsonData = req.body; 
   const filePath = 'src/views/admin/balance/variables/tableDataPasivos.json'; // Ruta al archivo JSON existente
+
+  fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), 'utf8', (err) => {
+    if (err) {
+      console.error('Error al sobrescribir el archivo:', err);
+      res.status(500).json({ error: 'Error al sobrescribir el archivo' });
+    } else {
+      console.log('Archivo JSON sobrescrito con éxito.');
+      res.status(200).json({ message: 'Archivo JSON sobrescrito con éxito' });
+    }
+  });
+});
+app.post('/api/OverwriteActivos', (req, res) => {
+  const jsonData = req.body; 
+  const filePath = 'src/views/admin/balance/variables/tableDataDevelopment.json'; // Ruta al archivo JSON existente
 
   fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), 'utf8', (err) => {
     if (err) {

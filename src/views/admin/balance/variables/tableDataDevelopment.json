@@ -1,29 +1,26 @@
 [
   {
     "name": "Efectivo",
-    "date": "2,365.47"
-  
+    "date": "2,353.47"
   },
   {
     "name": "Cuentas por cobrar",
     "date": "276.08"
- 
   },
   {
     "name": "Inventario",
     "date": "12,010.45"
-  
   },
   {
     "name": "Activos corrientes",
-    "date": "14,652.00"
+    "date": "14,640.00"
   },
   {
     "name": "Activos fijos al costo",
     "date": "40,000.00"
   },
   {
-    "name": "Depreciacion acumulada",
+    "name": "Depreciación acumulada",
     "date": "10,840.00"
   },
   {
@@ -31,7 +28,7 @@
     "date": "29,160.00"
   },
   {
-    "name": "Activos totales",
-    "date": "43,812.00"
+    "name": "Activos Totales",
+    "date": "43,800.00"
   }
 ]
