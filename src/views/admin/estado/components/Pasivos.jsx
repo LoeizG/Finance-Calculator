@@ -13,7 +13,7 @@ import {
 } from "react-table";
 import Progress from "components/progress";
 
-const Activos = (props) => {
+const Pasivos = (props) => {
   const { columnsData, tableData } = props;
 
   const columns = useMemo(() => columnsData, [columnsData]);
@@ -43,12 +43,12 @@ const Activos = (props) => {
     <Card extra={"w-[75%] h-full p-4 mx-auto"}>
        <div className="relative flex items-center justify-between">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
-          Activos
+          Pasivos
         </div>
        
       </div>
 
-      <div className="h-full mx-10 overflow-x-scroll xl:overflow-x-hidden">
+      <div class="h-full mx-10 overflow-x-scroll xl:overflow-x-hidden">
         <table
           {...getTableProps()}
           className="mt-8 h-max w-full"
@@ -128,4 +128,4 @@ const Activos = (props) => {
   );
 };
 
-export default Activos;
+export default Pasivos;

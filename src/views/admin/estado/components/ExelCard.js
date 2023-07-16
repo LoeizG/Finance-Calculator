@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import * as XLSX from "xlsx";
 
 /* Cálculos del Excel - Word para las fórmulas */
@@ -15,18 +15,12 @@ const DevelopmentCalculo = (razon1, razon2) => {
       value: (Math.ceil((razon1[0] / razon1[1]) * 100) / 100).toFixed(2),
     },
     {
-      "key": "Razón Rápida",
-      "value": ((Math.ceil((razon2[1]-razon2[0])/razon2[3] * 100) / 100).toFixed(2))
+      key: "Razón Rápida",
+      value: (
+        Math.ceil(((razon2[1] - razon2[0]) / razon2[2]) * 100) / 100
+      ).toFixed(2),
     },
-    {
-      "key": "Ratio de Endeudamiento",
-      "value": ((Math.ceil(razon1[1]/(razon1[0]-razon1[1]) * 100) / 100).toFixed(2))
-    },
-    {
-      "key": "Tasa de Rotación de Inventario",
-      "value": ((Math.round(razon2[4]/razon2[2] * 100) / 100).toFixed(2))
-    }
-  ]
+  ];
 
   return (
     <div className="calculoDeFormulas">
@@ -48,39 +42,15 @@ const DevelopmentCalculo = (razon1, razon2) => {
     </div>
   );
 };
-
-// <div className="calculoDeFormulas">
-//   <h3>Razón de Liquidez Corriente: {(Math.ceil(razonLiquidezCorriente[0]/razonLiquidezCorriente[1] * 100) / 100).toFixed(2)}</h3>
-//   <h3>Razón Rápida: {(Math.ceil((razonRapida[1]-razonRapida[0])/razonRapida[2] * 100) / 100).toFixed(2)}</h3>
-// </div>
-
 const ExcelCard = (props) => {
-  const [excelData, setExcelData] = useState(null);
   const [tables, setTables] = useState([]);
-  const [activeSheet, setActiveSheet] = useState("BalanceGeneral2022");
+  const [activeSheet, setActiveSheet] = useState("");
   const [column8Sum, setColumn8Sum] = useState(0);
   const [column8SumSelectedSheet, setColumn8SumSelectedSheet] = useState(0);
   const [column10SumSelectedSheet, setColumn10SumSelectedSheet] = useState(0);
   const [column7SumSelectedSheet, setColumn7SumSelectedSheet] = useState(0);
   const [RentabilidadNeta, setRentabilidadNeta] = useState(0);
-  const saveExcelDataToLocalStorage = (data) => {
-    localStorage.setItem("excelData", JSON.stringify(data));
-  };
-  const loadExcelDataFromLocalStorage = () => {
-    const storedData = localStorage.getItem("excelData");
-    if (storedData) {
-      return JSON.parse(storedData);
-    }
-    return null;
-  };
-  useEffect(() => {
-    const loadedExcelData = loadExcelDataFromLocalStorage();
-    if (loadedExcelData) {
-      setExcelData(loadedExcelData);
-      setTables(loadedExcelData);
-      setActiveSheet(loadedExcelData[0]?.sheetName || "");
-    }
-  }, []);
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -104,10 +74,7 @@ const ExcelCard = (props) => {
       });
 
       setTables(tableData);
-      setExcelData(tableData);
       setActiveSheet(tableData[0]?.sheetName || "");
-
-      saveExcelDataToLocalStorage(tableData);
 
       let sum = 0;
       tableData.forEach((table) => {
@@ -123,6 +90,7 @@ const ExcelCard = (props) => {
 
     reader.readAsArrayBuffer(file);
   };
+
   const handleSheetButtonClick = (sheetName) => {
     setActiveSheet(sheetName);
     const selectedTable = tables.find((table) => table.sheetName === sheetName);
@@ -155,10 +123,11 @@ const ExcelCard = (props) => {
         });
       }
 
-      setColumn8SumSelectedSheet(sumColumn8);
+      setColumn8SumSelectedSheet(sumColumn8 + sumColumn10);
       setColumn10SumSelectedSheet(sumColumn10);
       setColumn7SumSelectedSheet(sumColumn7);
       setRentabilidadNeta(sumColumn8 + sumColumn10);
+      props.columnsData(column8Sum);
     }
   };
 
@@ -178,8 +147,9 @@ const ExcelCard = (props) => {
           {tables.map((table, index) => (
             <button
               key={index}
-              className={`${activeSheet === table.sheetName ? "btnActivo" : "btnInactivo"
-                } rounded py-2 px-4`}
+              className={`${
+                activeSheet === table.sheetName ? "btnActivo" : "btnInactivo"
+              } rounded py-2 px-4`}
               onClick={() => handleSheetButtonClick(table.sheetName)}
             >
               {table.sheetName}
@@ -189,34 +159,14 @@ const ExcelCard = (props) => {
         {tables.map((table, index) => (
           <div
             key={index}
-            className={`${activeSheet === table.sheetName ? "block" : "hidden"
-              } relative mt-4`}
+            className={`${
+              activeSheet === table.sheetName ? "block" : "hidden"
+            } relative mt-4`}
           >
-            {/* <h3 className="text-lg font-semibold">
-            Suma de la columna 8: {Math.ceil(column8Sum * 100) / 100}
-          </h3>
-          {activeSheet && (
-            <h3 className="text-lg font-semibold">
-              Suma de la columna 8 (hoja {activeSheet}):{" "}
-              {Math.ceil(column8SumSelectedSheet * 100) / 100}
-            </h3>
-          )}
-          {activeSheet && (
-            <h3 className="text-lg font-semibold">
-              Suma de la columna 10 (hoja {activeSheet}):{" "}
-              {Math.ceil(column10SumSelectedSheet * 100) / 100}
-            </h3>
-          )}
-          {activeSheet && (
-            <h3 className="text-lg font-semibold">
-              Suma de la columna 7 (hoja {activeSheet}):{" "}
-              {Math.ceil(column7SumSelectedSheet * 100) / 100}
-            </h3>
-          )} */}
-            <h3 className="hidden text-lg font-semibold namePage">
+            <h3 className="text-lg font-semibold bg-gray-100 namePage">
               {table.sheetName}
             </h3>
-            <table className="table hidden pTable">
+            <table className="table pTable">
               <thead>
                 <tr>
                   {table.data[0].map((header, headerIndex) => (
@@ -238,7 +188,7 @@ const ExcelCard = (props) => {
                         if (typeof cellValue === "number") {
                           cellValue = Math.ceil(cellValue * 100) / 100;
                         }
-                      } catch (err) { }
+                      } catch (err) {}
 
                       /* Obtener datos del Activo Corriente y Pasivo Corriente */
                       tomarLiquidez && razonLiquidezCorriente.push(cellValue);
@@ -262,10 +212,8 @@ const ExcelCard = (props) => {
                       try {
                         if (
                           cellValue.trim() == "activos corrientes" ||
-                          cellValue.trim() == "activos totales" ||
                           cellValue.trim() == "pasivos corrientes" ||
-                          cellValue.trim() == "inventario" ||
-                          cellValue.trim() == "ventas totales"
+                          cellValue.trim() == "inventario"
                         ) {
                           tomarRapida = true;
                         } else {
@@ -281,8 +229,7 @@ const ExcelCard = (props) => {
                 ))}
               </tbody>
             </table>
-
-            {table.sheetName == "Razones Financieras" &&
+            {table.sheetName == "BalanceGeneral2022" &&
               DevelopmentCalculo(razonLiquidezCorriente, razonRapida)}
           </div>
         ))}

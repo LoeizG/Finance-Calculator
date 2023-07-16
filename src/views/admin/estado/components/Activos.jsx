@@ -41,22 +41,20 @@ const Activos = (props) => {
 
   return (
     <Card extra={"w-[75%] h-full p-4 mx-auto"}>
-       <div className="relative flex items-center justify-between">
-        <div className="text-xl font-bold text-navy-700 dark:text-white">
-          Activos
+      <div className="flex relative justify-between items-center">
+        <div className="text-xl font-bold dark:text-white text-navy-700">
+          Estado de perdida y resultado
         </div>
-       
       </div>
 
-      <div className="h-full mx-10 overflow-x-scroll xl:overflow-x-hidden">
+      <div class="overflow-x-scroll mx-10 h-full xl:overflow-x-hidden">
         <table
           {...getTableProps()}
-          className="mt-8 h-max w-full"
+          className="mt-8 w-full h-max"
           variant="simple"
           color="gray-500"
           mb="24px"
         >
-
           <thead>
             {headerGroups.map((headerGroup, index) => (
               <tr {...headerGroup.getHeaderGroupProps()} key={index}>
@@ -66,7 +64,7 @@ const Activos = (props) => {
                     className="border-b border-gray-200 pr-32 pb-[10px] text-start dark:!border-navy-700 "
                     key={index}
                   >
-                    <div className="text-m font-bold tracking-wide text-gray-600">
+                    <div className="font-bold tracking-wide text-gray-600 text-m">
                       {column.render("Header")}
                     </div>
                   </th>
@@ -83,25 +81,23 @@ const Activos = (props) => {
                     let data = "";
                     if (cell.column.Header === "CUENTA") {
                       data = (
-                        <p className="text-sm font-bold text-navy-700 dark:text-white">
+                        <p className="text-sm font-bold dark:text-white text-navy-700">
                           {cell.value}
                         </p>
                       );
-                    
                     } else if (cell.column.Header === "AÑO 2022") {
                       data = (
-                      
-                        <p className="text-sm font-bold text-navy-700 dark:text-white">
+                        <p className="text-sm font-bold dark:text-white text-navy-700">
                           $
-                          <b className="text-sm font-bold ml-3 text-navy-700 dark:text-white">
-                          {cell.value}
-                          </b> 
+                          <b className="ml-3 text-sm font-bold dark:text-white text-navy-700">
+                            {cell.value}
+                          </b>
                         </p>
                       );
                     } else if (cell.column.Header === "PORCENTAJE") {
                       data = (
-                        <div className="flex items-center gap-3">
-                          <p className="text-sm font-bold text-navy-700 dark:text-white">
+                        <div className="flex gap-3 items-center">
+                          <p className="text-sm font-bold dark:text-white text-navy-700">
                             {cell.value}%
                           </p>
                           <Progress width="w-[68px]" value={cell.value} />
@@ -112,7 +108,7 @@ const Activos = (props) => {
                       <td
                         {...cell.getCellProps()}
                         key={index}
-                        className="pt-[14px] pb-3 text-[14px]"
+                        className="pb-3 pt-[14px] text-[14px]"
                       >
                         {data}
                       </td>

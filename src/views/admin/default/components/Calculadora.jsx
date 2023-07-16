@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect } from 'react';
 import Widget from "components/widget/Widget";
 import { IoMdHome } from "react-icons/io";
 import { IoDocuments } from "react-icons/io5";
@@ -10,97 +10,94 @@ const LoanCalculator = () => {
 	const [loanPeriod, setLoanPeriod] = useState('');
 	const [paidPeriods, setPaidPeriods] = useState('');
 
-	const [Totalapagar, setTotalapagar] = useState(0);
-	const [monthlyPayment, setmonthlyPayment] = useState(0);
-	const [totalPayed, settotalPayed] = useState(0);
-	const [remainingPayment, setremainingPayment] = useState(0);
-	const [pagosFaltantes, setpagosFaltantes] = useState(0);
+  const [showWidget, setShowWidget] = useState(false);
 
-	const [showWidget, setShowWidget] = useState(false);
+	const [calculatedValues, setCalculatedValues] = useState({
+		Totalapagar: 0,
+		monthlyPayment: 0,
+		totalPayed: 0,
+		remainingPayment: 0,
+		pagosFaltantes: 0
+		});
 
 	const calculateLoan = () => {
 		const principal = parseFloat(loanAmount);
-		const interest = (parseFloat(interestRate) / 100) ;
+		const interest = (parseFloat(interestRate) / 100)/12 ;
 		const period = parseInt(loanPeriod);
 		const paidPeriod = parseInt(paidPeriods);
 		
 
-		setTotalapagar( (principal * Math.pow(1 + interest, period)));
+		const Totalapagar = principal * Math.pow(1 + interest, period);
 
-		setmonthlyPayment(principal * (((interest * Math.pow(1 + interest, period))) / ((Math.pow(1 + interest, period) - 1))));
+		const monthlyPayment = (principal * interest * Math.pow(1 + interest, period)) /
+		  (Math.pow(1 + interest, period) - 1);
 
-		settotalPayed(monthlyPayment * ((Math.pow(1 + interest, paidPeriod) - 1) / interest));
+		const totalPayed = monthlyPayment * ((Math.pow(1 + interest, paidPeriod) - 1) / interest);
 
-		setremainingPayment(((principal * Math.pow(1 + interest, paidPeriod))) - totalPayed); 
+		const remainingPayment = principal * Math.pow(1 + interest, paidPeriod) - totalPayed;
 
-		
-		setShowWidget(true);
-		console.log('Prestamo:', principal.toFixed(2));
+		const pagosFaltantes = period - paidPeriod;
+	
+		setCalculatedValues({
+		  Totalapagar,
+		  monthlyPayment,
+		  totalPayed,
+		  remainingPayment,
+		  pagosFaltantes
+		});
+	
+			  setShowWidget(true);
+			  
+			  
 
-		console.log('Tasa de interes efectiva:', interest.toFixed(8));
-		console.log('periodos:', period);
-		console.log('periodos pagados:', totalPayed.toFixed(0 ));
-		console.log('pagos faltantes:', pagosFaltantes.toFixed(8)); 
+    if (pagosFaltantes <= 12) {
+      const deudaCortoPlazo =
+        monthlyPayment *
+        ((Math.pow(1 + interest, pagosFaltantes) - 1) / interest);
+      const deudaLargoPlazo = 0;
+      const jsonData = [
+        {
+          name: "Prestamo bancario",
+          date: deudaCortoPlazo.toLocaleString("eng-US", {
+            style: "decimal",
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+          }),
+        },
+        {
+          name: "Cuentas por Pagar",
+          date: "1,065.00",
+        },
+        {
+          name: "Pasivos corrientes",
+          date: (deudaCortoPlazo + 1065).toLocaleString("eng-US", {
+            style: "decimal",
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+          }),
+        },
+        {
+          name: "Deuda a largo plazo",
+          date: deudaLargoPlazo.toLocaleString("eng-US", {
+            style: "decimal",
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+          }),
+        },
+        {
+          name: "Pasivos Totales",
+          date: (deudaLargoPlazo + 1065 + deudaCortoPlazo).toLocaleString(
+            "eng-US",
+            {
+              style: "decimal",
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            }
+          ),
+        },
+      ];
 
-		console.log('total pagado:', period.toFixed(2));
-		console.log('deuda actual:', remainingPayment);
-		CalculoParaJSON();
-	};
-
-	const CalculoParaJSON = () => {
-		const interest = (parseFloat(interestRate) / 100) / 12;
-		const period = parseInt(loanPeriod);
-		const paidPeriod = parseInt(paidPeriods);
-		const principal = parseFloat(loanAmount);
-
-		setpagosFaltantes(period - paidPeriod); 
-
-		if (pagosFaltantes <= 12) {
-			const deudaCortoPlazo = monthlyPayment * ((Math.pow(1 + interest, pagosFaltantes) - 1) / interest);
-			const deudaLargoPlazo = 0;
-			const jsonData = [
-				{
-					"name": "Prestamo bancario",
-					"date": deudaCortoPlazo.toLocaleString("eng-US",
-					{
-						style: "decimal",
-						maximumFractionDigits: 2,
-						minimumFractionDigits: 2
-					})
-				},
-				{
-					"name": "Cuentas por Pagar",
-					"date": "1,065.00"
-				},
-				{
-					"name": "Pasivos corrientes",
-					"date": (deudaCortoPlazo + 1065).toLocaleString("eng-US",
-					{
-						style: "decimal",
-						maximumFractionDigits: 2,
-						minimumFractionDigits: 2
-					})
-				},
-				{
-					"name": "Deuda a largo plazo",
-					"date": deudaLargoPlazo.toLocaleString("eng-US",
-					{
-						style: "decimal",
-						maximumFractionDigits: 2,
-						minimumFractionDigits: 2
-					})
-				},
-				{
-					"name": "Pasivos Totales",
-					"date": ((deudaLargoPlazo + 1065) + deudaCortoPlazo).toLocaleString("eng-US",
-					{
-						style: "decimal",
-						maximumFractionDigits: 2,
-						minimumFractionDigits: 2
-					})
-				},];
-
-			fetch('http://localhost:3001/src/views/admin/balance', {
+			fetch('http://localhost:3001/api/OverwritePasivos', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -159,7 +156,7 @@ const LoanCalculator = () => {
 						})
 				},];
 
-			fetch('http://localhost:3001/src/views/admin/balance', {
+			fetch('http://localhost:3001/api/OverwritePasivos', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -174,6 +171,136 @@ const LoanCalculator = () => {
 					console.error('Error al enviar los datos al servidor:', error);
 				});
 		}
+		
+			
+	};
+	
+
+	const CalculoParaJSON = () => {
+		const interest = (parseFloat(interestRate) / 100) / 12;
+		const period = parseInt(loanPeriod);
+
+		const pagosFaltantes = interest / period
+		if (calculatedValues.pagosFaltantes <= 12) {
+			const deudaCortoPlazo = calculatedValues.monthlyPayment * ((Math.pow(1 + interest, calculatedValues.pagosFaltantes) - 1) / interest);
+			const deudaLargoPlazo = 0;
+			const jsonData = [
+				{
+					"name": "Prestamo bancario",
+					"date": deudaCortoPlazo.toLocaleString("eng-US",
+					{
+						style: "decimal",
+						maximumFractionDigits: 2,
+						minimumFractionDigits: 2
+					})
+				},
+				{
+					"name": "Cuentas por Pagar",
+					"date": "1,065.00"
+				},
+				{
+					"name": "Pasivos corrientes",
+					"date": (deudaCortoPlazo + 1065).toLocaleString("eng-US",
+					{
+						style: "decimal",
+						maximumFractionDigits: 2,
+						minimumFractionDigits: 2
+					})
+				},
+				{
+					"name": "Deuda a largo plazo",
+					"date": deudaLargoPlazo.toLocaleString("eng-US",
+					{
+						style: "decimal",
+						maximumFractionDigits: 2,
+						minimumFractionDigits: 2
+					})
+				},
+				{
+					"name": "Pasivos Totales",
+					"date": ((deudaLargoPlazo + 1065) + deudaCortoPlazo).toLocaleString("eng-US",
+					{
+						style: "decimal",
+						maximumFractionDigits: 2,
+						minimumFractionDigits: 2
+					})
+				},];
+
+			fetch('http://localhost:3001/api/OverwritePasivos', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(jsonData)
+			})
+				.then(response => response.json())
+				.then(data => {
+					console.log(data.message);
+				})
+				.catch(error => {
+					console.error('Error al enviar los datos al servidor:', error);
+				});
+		} else {
+			const deudaCortoPlazo = calculatedValues.monthlyPayment * ((Math.pow(1 + interest, 12) - 1) / interest);
+			const deudaLargoPlazo = calculatedValues.monthlyPayment * ((Math.pow(1 + interest, (calculatedValues.pagosFaltantes - 12)) - 1) / interest);
+			const jsonData = [
+				{
+					"name": "Prestamo bancario",
+					"date": deudaCortoPlazo.toLocaleString("eng-US",
+						{
+							style: "decimal",
+							maximumFractionDigits: 2,
+							minimumFractionDigits: 2
+						})
+				},
+				{
+					"name": "Cuentas por Pagar",
+					"date": "1,065.00"
+				},
+				{
+					"name": "Pasivos corrientes",
+					"date": (deudaCortoPlazo + 1065).toLocaleString("eng-US",
+						{
+							style: "decimal",
+							maximumFractionDigits: 2,
+							minimumFractionDigits: 2
+						})
+				},
+				{
+					"name": "Deuda a largo plazo",
+					"date": deudaLargoPlazo.toLocaleString("eng-US",
+						{
+							style: "decimal",
+							maximumFractionDigits: 2,
+							minimumFractionDigits: 2
+						})
+				},
+				{
+					"name": "Pasivos Totales",
+					"date": ((deudaLargoPlazo + 1065) + deudaCortoPlazo).toLocaleString("eng-US",
+						{
+							style: "decimal",
+							maximumFractionDigits: 2,
+							minimumFractionDigits: 2
+						})
+				},];
+
+			fetch('http://localhost:3001/api/OverwritePasivos', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(jsonData)
+			})
+				.then(response => response.json())
+				.then(data => {
+					console.log(data.message);
+				})
+				.catch(error => {
+					console.error('Error al enviar los datos al servidor:', error);
+				});
+		}
+		
 
 	};
 
@@ -205,37 +332,44 @@ const LoanCalculator = () => {
 			
 			{showWidget && (
 				<div className="grid grid-cols-1 gap-5 mt- md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-3 w-full 3xl:grid-cols-6">
-					<Widget
-						icon={<MdBarChart className="w-7 h-7" />}
-						title={"Total a Pagar"}
-						subtitle={(Totalapagar.toLocaleString('en-US',
-						 { style: 'currency', currency: 'USD' }))}
-					/>
-					<Widget
-						icon={<IoDocuments className="w-6 h-6" />}
-						title={"Pago Mensual"}
-						subtitle={(monthlyPayment.toLocaleString('en-US',
-						{ style: 'currency', currency: 'USD' }))}
-					/>
-					<Widget
-						icon={<MdBarChart className="w-7 h-7" />}
-						title={"Pagado a la fecha"}
-						subtitle={(totalPayed.toLocaleString('en-US',
-						{ style: 'currency', currency: 'USD' }))}
-					/>
-					<Widget
-						icon={<MdDashboard className="w-6 h-6" />}
-						title={"Deuda Actual"}
-						subtitle={(remainingPayment.toLocaleString('en-US',
-						{ style: 'currency', currency: 'USD' }))}
-					/>
-					<Widget
-						icon={<MdBarChart className="w-7 h-7" />}
-						title={"Pagos Faltantes"}
-						subtitle={pagosFaltantes}
-					/>
-
-				</div>
+				<Widget
+				  icon={<MdBarChart className="w-7 h-7" />}
+				  title={"Total a Pagar"}
+				  subtitle={calculatedValues.Totalapagar.toLocaleString("en-US", {
+					style: "currency",
+					currency: "USD",
+				  })}
+				/>
+				<Widget
+				  icon={<IoDocuments className="w-6 h-6" />}
+				  title={"Pago Mensual"}
+				  subtitle={calculatedValues.monthlyPayment.toLocaleString("en-US", {
+					style: "currency",
+					currency: "USD",
+				  })}
+				/>
+				<Widget
+				  icon={<MdBarChart className="w-7 h-7" />}
+				  title={"Pagado a la fecha"}
+				  subtitle={calculatedValues.totalPayed.toLocaleString("en-US", {
+					style: "currency",
+					currency: "USD",
+				  })}
+				/>
+				<Widget
+				  icon={<MdDashboard className="w-6 h-6" />}
+				  title={"Deuda Actual"}
+				  subtitle={calculatedValues.remainingPayment.toLocaleString("en-US", {
+					style: "currency",
+					currency: "USD",
+				  })}
+				/>
+				<Widget
+				  icon={<MdBarChart className="w-7 h-7" />}
+				  title={"Pagos Faltantes"}
+				  subtitle={calculatedValues.pagosFaltantes}
+				/>
+			  </div>
 				)};
 			
 			

@@ -1,19 +1,15 @@
 import CardMenu from "components/card/CardMenu";
 import Card from "components/card";
-import { DiApple } from "react-icons/di";
-import { DiAndroid } from "react-icons/di";
-import { DiWindows } from "react-icons/di";
-
-import React, { useMemo } from "react";
 import {
   useGlobalFilter,
   usePagination,
   useSortBy,
   useTable,
 } from "react-table";
+import { MdCheckCircle, MdCancel, MdOutlineError } from "react-icons/md";
+import { useMemo } from "react";
 import Progress from "components/progress";
-
-const Activos = (props) => {
+const ComplexTable = (props) => {
   const { columnsData, tableData } = props;
 
   const columns = useMemo(() => columnsData, [columnsData]);
@@ -33,86 +29,84 @@ const Activos = (props) => {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
+    page,
     prepareRow,
     initialState,
   } = tableInstance;
-  initialState.pageSize = 11;
+  initialState.pageSize = 5;
 
   return (
-    <Card extra={"w-[75%] h-full p-4 mx-auto"}>
-       <div className="relative flex items-center justify-between">
+    <Card extra={"w-full h-full p-4 sm:overflow-x-auto"}>
+      <div className="relative flex items-center justify-between">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
-          Activos
+          Complex Table
         </div>
-       
+        <CardMenu />
       </div>
 
-      <div className="h-full mx-10 overflow-x-scroll xl:overflow-x-hidden">
-        <table
-          {...getTableProps()}
-          className="mt-8 h-max w-full"
-          variant="simple"
-          color="gray-500"
-          mb="24px"
-        >
-
+      <div className="mt-8 h-full overflow-x-scroll xl:overflow-hidden">
+        <table {...getTableProps()} className="w-full">
           <thead>
             {headerGroups.map((headerGroup, index) => (
               <tr {...headerGroup.getHeaderGroupProps()} key={index}>
                 {headerGroup.headers.map((column, index) => (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className="border-b border-gray-200 pr-32 pb-[10px] text-start dark:!border-navy-700 "
                     key={index}
+                    className="border-b border-gray-200 pr-28 pb-[10px] text-start dark:!border-navy-700"
                   >
-                    <div className="text-m font-bold tracking-wide text-gray-600">
+                    <p className="text-xs tracking-wide text-gray-600">
                       {column.render("Header")}
-                    </div>
+                    </p>
                   </th>
                 ))}
               </tr>
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {rows.map((row, index) => {
+            {page.map((row, index) => {
               prepareRow(row);
               return (
                 <tr {...row.getRowProps()} key={index}>
                   {row.cells.map((cell, index) => {
                     let data = "";
-                    if (cell.column.Header === "CUENTA") {
+                    if (cell.column.Header === "NAME") {
                       data = (
                         <p className="text-sm font-bold text-navy-700 dark:text-white">
                           {cell.value}
                         </p>
                       );
-                    
-                    } else if (cell.column.Header === "AÑO 2022") {
+                    } else if (cell.column.Header === "STATUS") {
                       data = (
-                      
-                        <p className="text-sm font-bold text-navy-700 dark:text-white">
-                          $
-                          <b className="text-sm font-bold ml-3 text-navy-700 dark:text-white">
-                          {cell.value}
-                          </b> 
-                        </p>
-                      );
-                    } else if (cell.column.Header === "PORCENTAJE") {
-                      data = (
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                          <div className={`rounded-full text-xl`}>
+                            {cell.value === "Approved" ? (
+                              <MdCheckCircle className="text-green-500" />
+                            ) : cell.value === "Disable" ? (
+                              <MdCancel className="text-red-500" />
+                            ) : cell.value === "Error" ? (
+                              <MdOutlineError className="text-orange-500" />
+                            ) : null}
+                          </div>
                           <p className="text-sm font-bold text-navy-700 dark:text-white">
-                            {cell.value}%
+                            {cell.value}
                           </p>
-                          <Progress width="w-[68px]" value={cell.value} />
                         </div>
                       );
+                    } else if (cell.column.Header === "DATE") {
+                      data = (
+                        <p className="text-sm font-bold text-navy-700 dark:text-white">
+                          {cell.value}
+                        </p>
+                      );
+                    } else if (cell.column.Header === "PROGRESS") {
+                      data = <Progress width="w-[68px]" value={cell.value} />;
                     }
                     return (
                       <td
+                        className="pt-[14px] pb-[18px] sm:text-[14px]"
                         {...cell.getCellProps()}
                         key={index}
-                        className="pt-[14px] pb-3 text-[14px]"
                       >
                         {data}
                       </td>
@@ -128,4 +122,4 @@ const Activos = (props) => {
   );
 };
 
-export default Activos;
+export default ComplexTable;

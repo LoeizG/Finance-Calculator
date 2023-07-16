@@ -1,9 +1,5 @@
 import CardMenu from "components/card/CardMenu";
 import Card from "components/card";
-import { DiApple } from "react-icons/di";
-import { DiAndroid } from "react-icons/di";
-import { DiWindows } from "react-icons/di";
-
 import React, { useMemo } from "react";
 import {
   useGlobalFilter,
@@ -11,9 +7,8 @@ import {
   useSortBy,
   useTable,
 } from "react-table";
-import Progress from "components/progress";
 
-const Activos = (props) => {
+const ColumnsTable = (props) => {
   const { columnsData, tableData } = props;
 
   const columns = useMemo(() => columnsData, [columnsData]);
@@ -33,40 +28,33 @@ const Activos = (props) => {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
+    page,
     prepareRow,
     initialState,
   } = tableInstance;
-  initialState.pageSize = 11;
+  initialState.pageSize = 5;
 
   return (
-    <Card extra={"w-[75%] h-full p-4 mx-auto"}>
-       <div className="relative flex items-center justify-between">
+    <Card extra={"w-full pb-10 p-4 h-full"}>
+      <header className="relative flex items-center justify-between">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
-          Activos
+          4-Columns Table
         </div>
-       
-      </div>
+        <CardMenu />
+      </header>
 
-      <div className="h-full mx-10 overflow-x-scroll xl:overflow-x-hidden">
-        <table
-          {...getTableProps()}
-          className="mt-8 h-max w-full"
-          variant="simple"
-          color="gray-500"
-          mb="24px"
-        >
-
+      <div className="mt-8 overflow-x-scroll xl:overflow-x-hidden">
+        <table {...getTableProps()} className="w-full">
           <thead>
             {headerGroups.map((headerGroup, index) => (
               <tr {...headerGroup.getHeaderGroupProps()} key={index}>
                 {headerGroup.headers.map((column, index) => (
                   <th
                     {...column.getHeaderProps(column.getSortByToggleProps())}
-                    className="border-b border-gray-200 pr-32 pb-[10px] text-start dark:!border-navy-700 "
                     key={index}
+                    className="border-b border-gray-200 pr-14 pb-[10px] text-start dark:!border-navy-700"
                   >
-                    <div className="text-m font-bold tracking-wide text-gray-600">
+                    <div className="flex w-full justify-between pr-10 text-xs tracking-wide text-gray-600">
                       {column.render("Header")}
                     </div>
                   </th>
@@ -75,44 +63,42 @@ const Activos = (props) => {
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {rows.map((row, index) => {
+            {page.map((row, index) => {
               prepareRow(row);
               return (
                 <tr {...row.getRowProps()} key={index}>
                   {row.cells.map((cell, index) => {
-                    let data = "";
-                    if (cell.column.Header === "CUENTA") {
+                    let data;
+                    if (cell.column.Header === "NAME") {
                       data = (
                         <p className="text-sm font-bold text-navy-700 dark:text-white">
                           {cell.value}
                         </p>
                       );
-                    
-                    } else if (cell.column.Header === "AÑO 2022") {
+                    } else if (cell.column.Header === "PROGRESS") {
                       data = (
-                      
-                        <p className="text-sm font-bold text-navy-700 dark:text-white">
-                          $
-                          <b className="text-sm font-bold ml-3 text-navy-700 dark:text-white">
-                          {cell.value}
-                          </b> 
+                        <p className="mr-[10px] text-sm font-semibold text-navy-700 dark:text-white">
+                          {cell.value}%
                         </p>
                       );
-                    } else if (cell.column.Header === "PORCENTAJE") {
+                    } else if (cell.column.Header === "QUANTITY") {
                       data = (
-                        <div className="flex items-center gap-3">
-                          <p className="text-sm font-bold text-navy-700 dark:text-white">
-                            {cell.value}%
-                          </p>
-                          <Progress width="w-[68px]" value={cell.value} />
-                        </div>
+                        <p className="text-sm font-bold text-navy-700 dark:text-white">
+                          {cell.value}
+                        </p>
+                      );
+                    } else if (cell.column.Header === "DATE") {
+                      data = (
+                        <p className="text-sm font-bold text-navy-700 dark:text-white">
+                          {cell.value}
+                        </p>
                       );
                     }
                     return (
                       <td
+                        className="pt-[14px] pb-[20px] sm:text-[14px]"
                         {...cell.getCellProps()}
                         key={index}
-                        className="pt-[14px] pb-3 text-[14px]"
                       >
                         {data}
                       </td>
@@ -128,4 +114,4 @@ const Activos = (props) => {
   );
 };
 
-export default Activos;
+export default ColumnsTable;

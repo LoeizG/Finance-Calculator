@@ -1,7 +1,7 @@
 [
   {
     "name": "Prestamo bancario",
-    "date": "0.00"
+    "date": "4,365.75"
   },
   {
     "name": "Cuentas por Pagar",
@@ -9,14 +9,14 @@
   },
   {
     "name": "Pasivos corrientes",
-    "date": "1,065.00"
+    "date": "5,430.75"
   },
   {
     "name": "Deuda a largo plazo",
-    "date": "0.00"
+    "date": "9,093.86"
   },
   {
     "name": "Pasivos Totales",
-    "date": "1,065.00"
+    "date": "14,524.61"
   }
 ]

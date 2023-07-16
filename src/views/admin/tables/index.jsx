@@ -5,7 +5,7 @@ import {
   columnsDataCheck,
   columnsDataColumns,
   columnsDataComplex,
-  columnsDataVentasAnuales
+  columnsDataVentasAnuales,
 } from "./variables/columnsData";
 import tableDataDevelopment from "./variables/tableDataDevelopment.json";
 import tableDataCheck from "./variables/tableDataCheck.json";
@@ -30,7 +30,7 @@ const Tables = () => {
 
   return (
     <div>
-      <div className="grid grid-cols-1 gap-5 mt-5 h-full bg-blue-100 rounded-[5px] md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 mt-5 h-full bg-blue-100 md:grid-cols-2 rounded-[5px]">
         <ExcelCard
           columnsData={Vista}
 
@@ -38,36 +38,36 @@ const Tables = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-5 mt-5 h-full md:grid-cols-2">
-        <DevelopmentTable
-          columnsData={columnsDataDevelopment}
-          tableData={tableDataDevelopment}
-        />
-        <CheckTable columnsData={columnsDataCheck} tableData={tableDataCheck} />
-      </div>
-
-      <div className="grid grid-cols-1 gap-5 mt-5 h-full bg-blue-100 rounded-[20px] md:grid-cols-2">
-        <ColumnsTable
-          columnsData={columnsDataColumns}
-          tableData={tableDataColumns}
-        />
-
-        <ComplexTable
-          columnsData={columnsDataComplex}
-          tableData={tableDataComplex}
-        />
-      </div>
-      <div className="grid grid-cols-1 gap-5 mt-5 h-full bg-blue-100 rounded-[20px] md:grid-cols-2">
-        <ColumnsTable
-          columnsData={columnsDataVentasAnuales}
-          tableData={tableDataColumns}
-        />
-
-        <ComplexTable
-          columnsData={columnsDataComplex}
-          tableData={tableDataComplex}
-        />
-      </div>
+      {/* <div className="grid grid-cols-1 gap-5 mt-5 h-full md:grid-cols-2"> */}
+      {/*   <DevelopmentTable */}
+      {/*     columnsData={columnsDataDevelopment} */}
+      {/*     tableData={tableDataDevelopment} */}
+      {/*   /> */}
+      {/*   <CheckTable columnsData={columnsDataCheck} tableData={tableDataCheck} /> */}
+      {/* </div> */}
+      {/**/}
+      {/* <div className="grid grid-cols-1 gap-5 mt-5 h-full bg-blue-100 md:grid-cols-2 rounded-[20px]"> */}
+      {/*   <ColumnsTable */}
+      {/*     columnsData={columnsDataColumns} */}
+      {/*     tableData={tableDataColumns} */}
+      {/*   /> */}
+      {/**/}
+      {/*   <ComplexTable */}
+      {/*     columnsData={columnsDataComplex} */}
+      {/*     tableData={tableDataComplex} */}
+      {/*   /> */}
+      {/* </div> */}
+      {/* <div className="grid grid-cols-1 gap-5 mt-5 h-full bg-blue-100 md:grid-cols-2 rounded-[20px]"> */}
+      {/*   <ColumnsTable */}
+      {/*     columnsData={columnsDataVentasAnuales} */}
+      {/*     tableData={tableDataColumns} */}
+      {/*   /> */}
+      {/**/}
+      {/*   <ComplexTable */}
+      {/*     columnsData={columnsDataComplex} */}
+      {/*     tableData={tableDataComplex} */}
+      {/*   /> */}
+      {/* </div> */}
     </div>
   );
 };
