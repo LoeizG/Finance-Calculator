@@ -5,6 +5,7 @@ import MainDashboard from "views/admin/default";
 import NFTMarketplace from "views/admin/marketplace";
 //import Profile from "views/admin/profile";
 import Balance from "views/admin/balance";
+import Estado from "views/admin/estado";
 import DataTables from "views/admin/tables";
 import RTLDefault from "views/rtl/default";
 
@@ -18,7 +19,7 @@ import {
   MdBarChart,
   MdMonetizationOn,
   MdLock,
-  MdCalculate
+  MdCalculate,
 } from "react-icons/md";
 import { MdMoneyOff } from "react-icons/md";
 
@@ -27,23 +28,30 @@ const routes = [
     name: "Calculadora Financiera",
     layout: "/admin",
     path: "default",
-    icon: <MdCalculate className="h-6 w-6" />,
+    icon: <MdCalculate className="w-6 h-6" />,
     component: <MainDashboard />,
   },
-  {
-    name: "Data Tables",
-    layout: "/admin",
-    icon: <MdBarChart className="h-6 w-6" />,
-    path: "data-tables",
-    component: <DataTables />,
-  },
+
   {
     name: "Balance General",
     layout: "/admin",
     path: "balance",
-    icon: <MdMonetizationOn className="h-6 w-6" />,
+    icon: <MdMonetizationOn className="w-6 h-6" />,
     component: <Balance />,
   },
-  
+  {
+    name: "Estado Resultado",
+    layout: "/admin",
+    path: "Estado resultado",
+    icon: <MdMonetizationOn className="w-6 h-6" />,
+    component: <Estado />,
+  },
+  {
+    name: "Data Tables",
+    layout: "/admin",
+    icon: <MdBarChart className="w-6 h-6" />,
+    path: "data-tables",
+    component: <DataTables />,
+  },
 ];
 export default routes;
