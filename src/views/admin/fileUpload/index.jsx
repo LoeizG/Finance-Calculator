@@ -10,7 +10,7 @@ import {
 import tableDataDevelopment from "./variables/tableDataDevelopment.json";
 
 import ExcelCard from "./components/ExelCard";
-import GenTable from "./components/GenTable";
+
 
 
 
