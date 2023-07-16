@@ -15,12 +15,18 @@ const DevelopmentCalculo = (razon1, razon2) => {
       value: (Math.ceil((razon1[0] / razon1[1]) * 100) / 100).toFixed(2),
     },
     {
-      key: "Razón Rápida",
-      value: (
-        Math.ceil(((razon2[1] - razon2[0]) / razon2[2]) * 100) / 100
-      ).toFixed(2),
+      "key": "Razón Rápida",
+      "value": ((Math.ceil((razon2[1]-razon2[0])/razon2[3] * 100) / 100).toFixed(2))
     },
-  ];
+    {
+      "key": "Ratio de Endeudamiento",
+      "value": ((Math.ceil(razon1[1]/(razon1[0]-razon1[1]) * 100) / 100).toFixed(2))
+    },
+    {
+      "key": "Tasa de Rotación de Inventario",
+      "value": ((Math.round(razon2[4]/razon2[2] * 100) / 100).toFixed(2))
+    }
+  ]
 
   return (
     <div className="calculoDeFormulas">
@@ -256,8 +262,10 @@ const ExcelCard = (props) => {
                       try {
                         if (
                           cellValue.trim() == "activos corrientes" ||
+                          cellValue.trim() == "activos totales" ||
                           cellValue.trim() == "pasivos corrientes" ||
-                          cellValue.trim() == "inventario"
+                          cellValue.trim() == "inventario" ||
+                          cellValue.trim() == "ventas totales"
                         ) {
                           tomarRapida = true;
                         } else {
