@@ -2,6 +2,7 @@ import React from "react";
 
 // Admin Imports
 import MainDashboard from "views/admin/default";
+import Fileupload  from "views/admin/fileUpload";
 import NFTMarketplace from "views/admin/marketplace";
 //import Profile from "views/admin/profile";
 import Balance from "views/admin/balance";
@@ -17,12 +18,19 @@ import {
   MdOutlineShoppingCart,
   MdBarChart,
   MdMonetizationOn,
-  MdLock,
-  MdCalculate
+  MdCalculate,
+  MdFileUpload
 } from "react-icons/md";
 import { MdMoneyOff } from "react-icons/md";
 
 const routes = [
+  {
+    name: "Subir Archivo Excel",
+    layout: "/admin",
+    path: "fileUpload",
+    icon: <MdFileUpload className="h-6 w-6" />,
+    component: <Fileupload />,
+  },
   {
     name: "Calculadora Financiera",
     layout: "/admin",

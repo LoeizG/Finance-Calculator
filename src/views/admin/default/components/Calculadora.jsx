@@ -47,20 +47,8 @@ const LoanCalculator = () => {
 		});
 	
 			  setShowWidget(true);
-			
-
-	};
-	
-
-	const CalculoParaJSON = () => {
-		const interest = (parseFloat(interestRate) / 100) / 12;
-		const period = parseInt(loanPeriod);
-		const paidPeriod = parseInt(paidPeriods);
-		const principal = parseFloat(loanAmount);
-
-		const pagosFaltantes = calculatedValues.pagosFaltantes;
-		const monthlyPayment = calculatedValues.monthlyPayment;
-
+			  
+			  
 
 		if (pagosFaltantes <= 12) {
 			const deudaCortoPlazo = monthlyPayment * ((Math.pow(1 + interest, pagosFaltantes) - 1) / interest);
@@ -107,7 +95,7 @@ const LoanCalculator = () => {
 					})
 				},];
 
-			fetch('http://localhost:3001/src/views/admin/balance', {
+			fetch('http://localhost:3001/api/OverwritePasivos', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -166,7 +154,136 @@ const LoanCalculator = () => {
 						})
 				},];
 
-			fetch('http://localhost:3001/src/views/admin/balance', {
+			fetch('http://localhost:3001/api/OverwritePasivos', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(jsonData)
+			})
+				.then(response => response.json())
+				.then(data => {
+					console.log(data.message);
+				})
+				.catch(error => {
+					console.error('Error al enviar los datos al servidor:', error);
+				});
+		}
+		
+			
+	};
+	
+
+	const CalculoParaJSON = () => {
+		const interest = (parseFloat(interestRate) / 100) / 12;
+		const period = parseInt(loanPeriod);
+
+		const pagosFaltantes = interest / period
+		if (calculatedValues.pagosFaltantes <= 12) {
+			const deudaCortoPlazo = calculatedValues.monthlyPayment * ((Math.pow(1 + interest, calculatedValues.pagosFaltantes) - 1) / interest);
+			const deudaLargoPlazo = 0;
+			const jsonData = [
+				{
+					"name": "Prestamo bancario",
+					"date": deudaCortoPlazo.toLocaleString("eng-US",
+					{
+						style: "decimal",
+						maximumFractionDigits: 2,
+						minimumFractionDigits: 2
+					})
+				},
+				{
+					"name": "Cuentas por Pagar",
+					"date": "1,065.00"
+				},
+				{
+					"name": "Pasivos corrientes",
+					"date": (deudaCortoPlazo + 1065).toLocaleString("eng-US",
+					{
+						style: "decimal",
+						maximumFractionDigits: 2,
+						minimumFractionDigits: 2
+					})
+				},
+				{
+					"name": "Deuda a largo plazo",
+					"date": deudaLargoPlazo.toLocaleString("eng-US",
+					{
+						style: "decimal",
+						maximumFractionDigits: 2,
+						minimumFractionDigits: 2
+					})
+				},
+				{
+					"name": "Pasivos Totales",
+					"date": ((deudaLargoPlazo + 1065) + deudaCortoPlazo).toLocaleString("eng-US",
+					{
+						style: "decimal",
+						maximumFractionDigits: 2,
+						minimumFractionDigits: 2
+					})
+				},];
+
+			fetch('http://localhost:3001/api/OverwritePasivos', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(jsonData)
+			})
+				.then(response => response.json())
+				.then(data => {
+					console.log(data.message);
+				})
+				.catch(error => {
+					console.error('Error al enviar los datos al servidor:', error);
+				});
+		} else {
+			const deudaCortoPlazo = calculatedValues.monthlyPayment * ((Math.pow(1 + interest, 12) - 1) / interest);
+			const deudaLargoPlazo = calculatedValues.monthlyPayment * ((Math.pow(1 + interest, (calculatedValues.pagosFaltantes - 12)) - 1) / interest);
+			const jsonData = [
+				{
+					"name": "Prestamo bancario",
+					"date": deudaCortoPlazo.toLocaleString("eng-US",
+						{
+							style: "decimal",
+							maximumFractionDigits: 2,
+							minimumFractionDigits: 2
+						})
+				},
+				{
+					"name": "Cuentas por Pagar",
+					"date": "1,065.00"
+				},
+				{
+					"name": "Pasivos corrientes",
+					"date": (deudaCortoPlazo + 1065).toLocaleString("eng-US",
+						{
+							style: "decimal",
+							maximumFractionDigits: 2,
+							minimumFractionDigits: 2
+						})
+				},
+				{
+					"name": "Deuda a largo plazo",
+					"date": deudaLargoPlazo.toLocaleString("eng-US",
+						{
+							style: "decimal",
+							maximumFractionDigits: 2,
+							minimumFractionDigits: 2
+						})
+				},
+				{
+					"name": "Pasivos Totales",
+					"date": ((deudaLargoPlazo + 1065) + deudaCortoPlazo).toLocaleString("eng-US",
+						{
+							style: "decimal",
+							maximumFractionDigits: 2,
+							minimumFractionDigits: 2
+						})
+				},];
+
+			fetch('http://localhost:3001/api/OverwritePasivos', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
