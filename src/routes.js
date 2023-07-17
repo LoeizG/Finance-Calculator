@@ -15,10 +15,10 @@ import SignIn from "views/auth/SignIn";
 
 // Icon Imports
 import {
-  MdHome,
-  MdOutlineShoppingCart,
+  MdAttachMoney,
+  MdTrendingUp,
   MdBarChart,
-  MdMonetizationOn,
+  MdAccountBalance,
   MdCalculate,
   MdFileUpload
 } from "react-icons/md";
@@ -44,7 +44,7 @@ const routes = [
     name: "Balance General",
     layout: "/admin",
     path: "balance",
-    icon: <MdMonetizationOn className="w-6 h-6" />,
+    icon: <MdAccountBalance className="w-6 h-6" />,
     component: <Balance />,
   },
 
@@ -52,7 +52,7 @@ const routes = [
     name: "Estado de Resultados",
     layout: "/admin",
     path: "estado",
-    icon: <MdMonetizationOn className="w-6 h-6" />,
+    icon: <MdTrendingUp className="w-6 h-6" />,
     component: <Estado />,
   },
   {
