@@ -102,6 +102,20 @@ const ExcelCard = (props) => {
     let activosFijosNetos = activosFijosCosto * (0.9 ** 3);
 
     let depreciacionAc = 0;
+    let depreciacion3Ano = (activosFijosCosto * (0.9 ** 2))-(activosFijosCosto * (0.9 ** 3));
+
+    let totalGastoPublicidad = (dataCostosOp[0]["Publicidad: "]) * 12;
+    let totalGastoTransporte = (dataCostosOp[0]["Transporte:"]) * 12; 
+    let totalGastoAgua = (dataCostosOp[0]["Servicio de agua: "]) * 12;
+    let totalGastoElectricidad = (dataCostosOp[0]["Electricidad: "]) * 12;
+    let totalGastoInternet = (dataCostosOp[0]["Internet: "]) * 12;
+    let totalGastoSalarios = (dataCostosOp[0]["Salarios: "]) * 12;
+    let totalGastoRenta = (dataCostosOp[0]["Renta: "]) * 12;
+
+
+
+
+  
   
     dataVentas.forEach((item) => {
       if(item.fecha === "2022"){
@@ -155,6 +169,8 @@ const ExcelCard = (props) => {
     let efectivo = (totalAbonado + totalCancelado) - (totalComprado + totalCostosOp);
 
     let activosCorrientes = (efectivo + totalPorCobrar + totalInventario);
+
+    let impuesto = ((((totalAbonado + totalCancelado) - totalComprado)-totalCostosOp)*0.25)
 
     console.log("Efectivo: ", efectivo);
 
@@ -280,6 +296,97 @@ const ExcelCard = (props) => {
           .catch(error => {
             console.error('Error al enviar los datos al servidor:', error);
           });
+
+          const jsonEstado = [
+            {
+              "name": "Ingreso por ventas",
+              "date": (totalAbonado + totalCancelado).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+                })
+            },
+            {
+              "name": "Costo de los bienes vendidos",
+              "date": totalComprado.toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+                })
+            },{
+              "name": "Utilidad bruta",
+              "date": ((totalAbonado + totalCancelado) - totalComprado).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+                })
+            },{
+              "name": "Menos Gastos Operativos",
+              "date": ""
+            },{
+              "name": "Gastos de ventas",
+              "date": (totalGastoPublicidad + totalGastoTransporte).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+                })
+            },{
+              "name": "Gastos generales y administrativos",
+              "date": (totalGastoAgua + totalGastoElectricidad + totalGastoInternet + totalGastoSalarios).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+                })
+            },{
+              "name": "Gastos de arrendamiento",
+              "date": (totalGastoRenta).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+                })
+            },{
+              "name": "Gastos por depreciación",
+              "date": depreciacion3Ano.toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+                })
+            },{
+              "name": "Total de gastos operativos",
+              "date": (totalCostosOp).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+                })
+            },{
+              "name": "Utilidad operativa",
+              "date": (((totalAbonado + totalCancelado) - totalComprado)-totalCostosOp).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+                })
+            },{
+              "name": "Menos Gastos Por Impuestos",
+              "date": ""
+            },{
+              "name": "Impuesto sobre la renta (25%)",
+              "date": impuesto.toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+                })
+            },{
+              "name": "Utilidad neta despues de impuestos",
+              "date": ((((totalAbonado + totalCancelado) - totalComprado)-totalCostosOp)-impuesto).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+                })
+            },]
+            fetch('http://localhost:3001/api/OverwriteEstado', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(jsonEstado)
+            })
+              .then(response => response.json())
+              .then(data => {
+                console.log(data.message);
+              })
+              .catch(error => {
+                console.error('Error al enviar los datos al servidor:', error);
+              });
+
 
   };
 

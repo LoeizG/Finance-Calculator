@@ -47,10 +47,11 @@ const routes = [
     icon: <MdMonetizationOn className="w-6 h-6" />,
     component: <Balance />,
   },
+
   {
-    name: "Estado Resultado",
+    name: "Estado de Resultados",
     layout: "/admin",
-    path: "Estado resultado",
+    path: "estado",
     icon: <MdMonetizationOn className="w-6 h-6" />,
     component: <Estado />,
   },

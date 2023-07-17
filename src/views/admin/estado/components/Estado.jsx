@@ -43,7 +43,7 @@ const Activos = (props) => {
     <Card extra={"w-[75%] h-full p-4 mx-auto"}>
       <div className="flex relative justify-between items-center">
         <div className="text-xl font-bold dark:text-white text-navy-700">
-          Estado de perdida y resultado
+          Estado de resultados
         </div>
       </div>
 
@@ -88,7 +88,6 @@ const Activos = (props) => {
                     } else if (cell.column.Header === "AÑO 2022") {
                       data = (
                         <p className="text-sm font-bold dark:text-white text-navy-700">
-                          $
                           <b className="ml-3 text-sm font-bold dark:text-white text-navy-700">
                             {cell.value}
                           </b>
