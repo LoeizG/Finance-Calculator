@@ -5,11 +5,11 @@
   },
   {
     "name": "Costo de los bienes vendidos",
-    "date": "$50,055.00"
+    "date": "$41,137.05"
   },
   {
     "name": "Utilidad bruta",
-    "date": "$58,765.47"
+    "date": "$67,683.42"
   },
   {
     "name": "Menos Gastos Operativos",
@@ -28,16 +28,12 @@
     "date": "$18,000.00"
   },
   {
-    "name": "Gastos por depreciación",
-    "date": "$3,240.00"
-  },
-  {
     "name": "Total de gastos operativos",
     "date": "$56,412.00"
   },
   {
     "name": "Utilidad operativa",
-    "date": "$2,353.47"
+    "date": "$11,271.42"
   },
   {
     "name": "Menos Gastos Por Impuestos",
@@ -45,10 +41,10 @@
   },
   {
     "name": "Impuesto sobre la renta (25%)",
-    "date": "$588.37"
+    "date": "$2,817.86"
   },
   {
     "name": "Utilidad neta despues de impuestos",
-    "date": "$1,765.11"
+    "date": "$8,453.57"
   }
 ]

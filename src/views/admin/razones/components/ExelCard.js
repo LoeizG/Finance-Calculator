@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import moment from "moment";
 
-import compras from "variables/Compras 2022.json"
-import costosOp from "variables/Costos op..json"
-import inventario from "variables/Inventario 2022.json"
-import ventas from "variables/Ventas anuales 2022.json"
-import productos from "variables/Productos.json"
+import compras from "../../../../variables/Compras 2022.json"
+import costosOp from "../../../../variables/Costos op..json"
+import inventario from "../../../../variables/Inventario 2022.json"
+import ventas from "../../../../variables/Ventas anuales 2022.json"
+
 const ExcelCard = (props) => {
   const [tables, setTables] = useState([]);
   const [activeSheet, setActiveSheet] = useState("");
@@ -86,9 +86,6 @@ const ExcelCard = (props) => {
     const dataCostosOp = costosOp;
     const dataInventario = inventario;
     const dataVentas = ventas;
-    const dataProducto = productos;
-    const sumaCantidadesPorProducto = {};
-    const costoUnitarioPorProducto = {};
     
     let totalAbonado = 0;
     let totalCancelado = 0;
@@ -114,7 +111,6 @@ const ExcelCard = (props) => {
     let totalGastoInternet = (dataCostosOp[0]["Internet: "]) * 12;
     let totalGastoSalarios = (dataCostosOp[0]["Salarios: "]) * 12;
     let totalGastoRenta = (dataCostosOp[0]["Renta: "]) * 12;
-    let totalCostoBienesVendidos = 0;
 
 
 
@@ -129,31 +125,8 @@ const ExcelCard = (props) => {
         totalCancelado += item.Cancelación;
       }else if(item["Fecha de cancelación"] === "2023"){
         totalPorCobrar += item.Cancelación;
-      } 
-    });
-
-    dataProducto.forEach((item) => {
-      const producto = item["Código"];
-      const costoUnitario = item["Costo unitario"];
-      costoUnitarioPorProducto[producto] = costoUnitario;
-    });
-    
-  
-    dataVentas.forEach((item) => {
-      const producto = item.Producto;
-      const cantidad = item.Cantidad;
-      const fecha = item.fecha;
-    
-      // Verificar que el año sea "2022" antes de realizar la multiplicación
-      if (fecha === "2022") {
-        if (sumaCantidadesPorProducto[producto]) {
-          sumaCantidadesPorProducto[producto] += cantidad * costoUnitarioPorProducto[producto];
-        } else {
-          sumaCantidadesPorProducto[producto] = cantidad * costoUnitarioPorProducto[producto];
-        }
       }
     });
-    
 
     dataCompras.forEach((item) => {
       if(item.Fecha === "2022"){
@@ -197,11 +170,10 @@ const ExcelCard = (props) => {
 
     let activosCorrientes = (efectivo + totalPorCobrar + totalInventario);
 
+    let impuesto = ((((totalAbonado + totalCancelado) - totalComprado)-totalCostosOp)*0.25)
 
-    totalCostoBienesVendidos = Object.values(sumaCantidadesPorProducto).reduce((total, cantidad) => total + cantidad, 0);
+    console.log("Efectivo: ", efectivo);
 
-    
-    let impuesto = ((((totalAbonado + totalCancelado) - totalCostoBienesVendidos)-totalCostosOp)* (0.25))
     const jsonActivos = [
       {
         "name": "Efectivo",
@@ -335,13 +307,13 @@ const ExcelCard = (props) => {
             },
             {
               "name": "Costo de los bienes vendidos",
-              "date": totalCostoBienesVendidos.toLocaleString("en-US", {
+              "date": totalComprado.toLocaleString("en-US", {
                 style: "currency",
                 currency: "USD",
                 })
             },{
               "name": "Utilidad bruta",
-              "date": ((totalAbonado + totalCancelado) - totalCostoBienesVendidos).toLocaleString("en-US", {
+              "date": ((totalAbonado + totalCancelado) - totalComprado).toLocaleString("en-US", {
                 style: "currency",
                 currency: "USD",
                 })
@@ -374,7 +346,7 @@ const ExcelCard = (props) => {
                 })
             },{
               "name": "Utilidad operativa",
-              "date": (((totalAbonado + totalCancelado) - totalCostoBienesVendidos)-totalCostosOp).toLocaleString("en-US", {
+              "date": (((totalAbonado + totalCancelado) - totalComprado)-totalCostosOp).toLocaleString("en-US", {
                 style: "currency",
                 currency: "USD",
                 })
@@ -389,7 +361,7 @@ const ExcelCard = (props) => {
                 })
             },{
               "name": "Utilidad neta despues de impuestos",
-              "date": ((((totalAbonado + totalCancelado) - totalCostoBienesVendidos)-totalCostosOp)-impuesto).toLocaleString("en-US", {
+              "date": ((((totalAbonado + totalCancelado) - totalComprado)-totalCostosOp)-impuesto).toLocaleString("en-US", {
                 style: "currency",
                 currency: "USD",
                 })

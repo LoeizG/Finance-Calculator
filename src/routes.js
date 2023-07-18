@@ -8,6 +8,7 @@ import NFTMarketplace from "views/admin/marketplace";
 import Balance from "views/admin/balance";
 import Estado from "views/admin/estado";
 import DataTables from "views/admin/tables";
+import Razones from "views/admin/razones";
 import RTLDefault from "views/rtl/default";
 
 // Auth Imports
@@ -56,11 +57,18 @@ const routes = [
     component: <Estado />,
   },
   {
+    name: "Razones Financieras",
+    layout: "/admin",
+    icon: <MdAttachMoney className="w-6 h-6" />,
+    path: "razones",
+    component: <Razones />,
+  },
+  /*{
     name: "Data Tables",
     layout: "/admin",
     icon: <MdBarChart className="w-6 h-6" />,
     path: "data-tables",
     component: <DataTables />,
-  },
+  },*/
 ];
 export default routes;
